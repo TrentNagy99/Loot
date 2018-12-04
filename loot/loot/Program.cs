@@ -41,7 +41,16 @@ namespace loot
         public static void MainMenu()
         {
             Console.Clear();
-            string title = "==============================================\n" +
+            playerHealth = 5;
+            playerMaxHealth = 5;
+            explorationsLasted = 0;
+            enemiesSlain = 0;
+            potionsDrank = 0;
+            crystalsUsed = 0;
+            playerInventory.Clear();
+            playerInventory.Add("sword");
+
+        string title = "==============================================\n" +
                            "||||||||||||||||||||||||||||||||||||||||||||||\n" +
                            "==============================================\n\n" +
                            "  L           OOO          OOO       TTTTTTT  \n" +
@@ -104,16 +113,16 @@ namespace loot
          */ 
         public static void PromptUser()
         {
-            Console.WriteLine("You have " + playerHealth + " health\n");
-            Console.WriteLine("1) View Inventory\n" +
-                              "2) Explore\n" +
-                              "3) View Stats\n" +
-                              "4) Exit\n");
-            string input = Console.ReadLine();
-
             if(playerHealth >= 1)
             {
-                if(input == "1")
+                Console.WriteLine("You have " + playerHealth + " health\n");
+                Console.WriteLine("1) View Inventory\n" +
+                                  "2) Explore\n" +
+                                  "3) View Stats\n" +
+                                  "4) Exit\n");
+                string input = Console.ReadLine();
+
+                if (input == "1")
                 {
                     // Catch an exception if there's a problem with printing out the inventory list.
                     try
