@@ -17,11 +17,50 @@ namespace loot
          */
         static void Main(string[] args)
         {
-            Console.WriteLine("While eavesdropping on a conversation in town, you hear of the Dungeon that contains" +
+            MainMenu();
+        }
+
+        public static void MainMenu()
+        {
+            Console.Clear();
+            string title = "============================================\n" +
+                           "--------------------Loot--------------------\n" +
+                           "============================================\n";
+            Console.WriteLine(title);
+            PromptMenu();
+        }
+
+        public static void PromptMenu()
+        {
+            Console.WriteLine("New Game");
+            Console.WriteLine("Continue");
+            Console.WriteLine("Exit");
+
+            string menuChoice = Console.ReadLine();
+
+            if (menuChoice.ToLower() == "new game")
+            {
+                Console.Clear();
+                Console.WriteLine("While eavesdropping on a conversation in town, you hear of the Dungeon that contains" +
                 "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
                 "\nwith nothing to lose, you enter the Dungeon whilist clutching your sword close to you.\n");
 
-            PromptUser();
+                PromptUser();
+            }
+            else if (menuChoice.ToLower() == "exit")
+            {
+                Environment.Exit(0);
+            }
+            else if (menuChoice == "")
+            {
+                Console.Clear();
+                MainMenu();
+            }
+            else
+            {
+                Console.WriteLine("\nThat feature hasn't been put in yet!\n");
+                PromptMenu();
+            }
         }
 
         /**
@@ -34,7 +73,7 @@ namespace loot
                               "2) Explore\n" +
                               "3) Exit\n");
             string input = Console.ReadLine();
-            if(playerHealth > 1)
+            if(playerHealth >= 1)
             {
                 if(input == "1")
                 {
@@ -61,28 +100,32 @@ namespace loot
                     {
                         Console.WriteLine("\nWhich one? (use the item name)");
                         string itemChoice = Console.ReadLine();
-                        
-                        if(itemChoice == "potion")
+
+                        switch (itemChoice.ToLower())
                         {
-                            Console.WriteLine("\nYou drink the potion, and feel your wounds begin to heal immediately." + 
+                            //Potion
+                            case "potion":
+                                Console.WriteLine("\nYou drink the potion, and feel your wounds begin to heal immediately." +
                                               "\nYour health is restored to " + playerMaxHealth);
-                            playerHealth = playerMaxHealth;
-                            playerInventory.Remove(itemChoice);
-                        }
-                        else if (itemChoice == "health crystal")
-                        {
-                            Console.WriteLine("\nThe crystal responds to your desire for greatness.");
-                            Console.WriteLine("Your max health is increased by 1.");
-                            playerMaxHealth++;
-                            playerInventory.Remove(itemChoice);
-                        }
-                        else if (itemChoice == "sword")
-                        {
-                            Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.");
+                                playerHealth = playerMaxHealth;
+                                playerInventory.Remove("potion");
+                                break;
+                            //Health crystal
+                            case "health crystal":
+                            case "crystal":
+                                Console.WriteLine("\nThe crystal responds to your desire for greatness.");
+                                Console.WriteLine("Your max health is increased by 1.");
+                                playerMaxHealth++;
+                                playerInventory.Remove("health crystal");
+                                break;
+                            //Sword
+                            case "sword":
+                                Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
+                                break;
+                            //Unknown
+                            default:
+                                Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.");
+                                break;
                         }
                     }
                     else if (useItemYorN.ToLower() == "n")
@@ -119,7 +162,7 @@ namespace loot
                     Console.WriteLine("\nYou decide to retire your days of adventuring.");
                     Console.WriteLine("\n\nPress enter to leave the dungeon.");
                     Console.Read();
-                    Environment.Exit(0);
+                    MainMenu();
                 }
             }
             else
@@ -128,6 +171,7 @@ namespace loot
                 Console.WriteLine("Hopefully a new adventurer will be strong enough to explore the dungeon further.");
                 Console.WriteLine("\n\nPress Enter to exit.");
                 Console.Read();
+                MainMenu();
             }
         }
 
