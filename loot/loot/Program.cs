@@ -19,6 +19,14 @@ namespace loot
         public static List<string> possibleLoot = new List<string> {"health crystal", "potion"};
         public static int playerHealth = 5;
         public static int playerMaxHealth = 5;
+
+        //----Stats----
+        public static int explorationsLasted = 0;
+        public static int enemiesSlain = 0;
+        public static int potionsDrank = 0;
+        public static int crystalsUsed = 0;
+        //----Stats----
+
         /**
          *  Main 
          */
@@ -33,10 +41,21 @@ namespace loot
         public static void MainMenu()
         {
             Console.Clear();
-            string title = "============================================\n" +
-                           "--------------------Loot--------------------\n" +
-                           "============================================\n";
+            string title = "==============================================\n" +
+                           "||||||||||||||||||||||||||||||||||||||||||||||\n" +
+                           "==============================================\n\n" +
+                           "  L           OOO          OOO       TTTTTTT  \n" +
+                           "  L          O   O        O   O         T     \n" +
+                           "  L         O     O      O     O        T     \n" +
+                           "  L         O     O      O     O        T     \n" +
+                           "  L          O   O        O   O         T     \n" +
+                           "  LLLLLL      OOO          OOO          T     \n\n" +
+                           "==============================================\n" +
+                           "||||||||||||||||||||||||||||||||||||||||||||||\n" +
+                           "==============================================\n";
+
             Console.WriteLine(title);
+
             PromptMenu();
         }
 
@@ -88,7 +107,8 @@ namespace loot
             Console.WriteLine("You have " + playerHealth + " health\n");
             Console.WriteLine("1) View Inventory\n" +
                               "2) Explore\n" +
-                              "3) Exit\n");
+                              "3) View Stats\n" +
+                              "4) Exit\n");
             string input = Console.ReadLine();
 
             if(playerHealth >= 1)
@@ -126,6 +146,7 @@ namespace loot
                                               "\nYour health is restored to " + playerMaxHealth);
                                 playerHealth = playerMaxHealth;
                                 playerInventory.Remove("potion");
+                                potionsDrank++;
                                 break;
                             //Health crystal
                             case "health crystal":
@@ -134,6 +155,7 @@ namespace loot
                                 Console.WriteLine("Your max health is increased by 1.");
                                 playerMaxHealth++;
                                 playerInventory.Remove("health crystal");
+                                crystalsUsed++;
                                 break;
                             //Sword
                             case "sword":
@@ -155,6 +177,7 @@ namespace loot
                 else if(input == "2")
                 {
                     Console.WriteLine("\nYou explore the dungeon further.\n");
+                    explorationsLasted++;
 
                     Random rand = new Random();
                     int chance = rand.Next(50);
@@ -169,6 +192,14 @@ namespace loot
                     PromptUser();
                 }
                 else if(input == "3")
+                {
+                    Console.WriteLine("\nExplorations lasted: " + explorationsLasted +
+                                      "\nEnemies slain: " + enemiesSlain + 
+                                      "\nPotions Drank: " + potionsDrank + 
+                                      "\nCrystals used: " + crystalsUsed + "\n");
+                    PromptUser();
+                }
+                else if(input == "4")
                 {
                     Console.WriteLine("\nYou decide to retire your days of adventuring.");
                     Console.WriteLine("\n\nPress enter to leave the dungeon.");
@@ -212,7 +243,7 @@ namespace loot
         }
 
         /**
-         * This method activates if the player finds a chest while exploring
+         * This method activates if the player finds an enemy while exploring
          */
         public static void FindEnemy()
         {
@@ -241,6 +272,7 @@ namespace loot
             {
                 Console.WriteLine("Your natural speed lets you attack first.");
                 Console.WriteLine("The enemy has been vanquished to oblivion.\n");
+                enemiesSlain++;
             }
             else
             {
