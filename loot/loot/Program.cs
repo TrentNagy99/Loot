@@ -75,7 +75,7 @@ namespace loot
         {
             Console.WriteLine("New Game");
             Console.WriteLine("Continue");
-            Console.WriteLine("Exit");
+            Console.WriteLine("Exit\n");
 
             string menuChoice = Console.ReadLine();
 
@@ -94,6 +94,10 @@ namespace loot
                 //Exit game
                 case "exit":
                     Environment.Exit(0);
+                    break;
+                case "continue":
+                    Console.WriteLine("Coming soon.\n");
+                    PromptMenu();
                     break;
                 //The program will break if this isn't here.
                 case "":
