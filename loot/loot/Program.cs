@@ -51,28 +51,32 @@ namespace loot
 
             string menuChoice = Console.ReadLine();
 
-            if (menuChoice.ToLower() == "new game")
+            switch (menuChoice.ToLower())
             {
-                Console.Clear();
-                Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
-                "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
-                "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
+                //New Game
+                case "new game":
+                case "new":
+                    Console.Clear();
+                    Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
+                    "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
+                    "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
 
-                PromptUser();
-            }
-            else if (menuChoice.ToLower() == "exit")
-            {
-                Environment.Exit(0);
-            }
-            else if (menuChoice == "")
-            {
-                Console.Clear();
-                MainMenu();
-            }
-            else
-            {
-                Console.WriteLine("\nThat feature hasn't been put in yet!\n");
-                PromptMenu();
+                    PromptUser();
+                    break;
+                //Exit game
+                case "exit":
+                    Environment.Exit(0);
+                    break;
+                //The program will break if this isn't here.
+                case "":
+                    Console.Clear();
+                    MainMenu();
+                    break;
+                //Unknown selection
+                default:
+                    Console.WriteLine("\nThat feature hasn't been put in yet!\n");
+                    PromptMenu();
+                    break;
             }
         }
 
@@ -86,6 +90,7 @@ namespace loot
                               "2) Explore\n" +
                               "3) Exit\n");
             string input = Console.ReadLine();
+
             if(playerHealth >= 1)
             {
                 if(input == "1")
@@ -95,9 +100,8 @@ namespace loot
                     {
                         Console.WriteLine("\n-----Inventory-----");
                         for (int i = 0; i < playerInventory.Count; i++)
-                        {
                             Console.WriteLine(playerInventory[i]);
-                        }
+
                         Console.WriteLine("-------------------\n");
                     }
                     catch (Exception ex)
@@ -156,17 +160,11 @@ namespace loot
                     int chance = rand.Next(50);
 
                     if(chance >= 0 && chance <= 20)
-                    {
                         FindChest();
-                    }
                     else if (chance >= 21 && chance <= 40)
-                    {
                         FindEnemy();
-                    }
                     else if (chance >= 41 && chance <= 50)
-                    {
                         FindTrap();
-                    }
 
                     PromptUser();
                 }
@@ -176,6 +174,11 @@ namespace loot
                     Console.WriteLine("\n\nPress enter to leave the dungeon.");
                     Console.Read();
                     MainMenu();
+                }
+                else
+                {
+                    Console.WriteLine("You don't think \"" + input + "\" is a viable option.\n");
+                    PromptUser();
                 }
             }
             else
