@@ -17,7 +17,10 @@ namespace loot
          */
         static void Main(string[] args)
         {
-            Console.WriteLine("You enter a dungeon with only a sword and 5 health.\n");
+            Console.WriteLine("While eavesdropping on a conversation in town, you hear of the Dungeon that contains" +
+                "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
+                "\nwith nothing to lose, you enter the Dungeon whilist clutching your sword close to you.\n");
+
             PromptUser();
         }
 
@@ -48,7 +51,7 @@ namespace loot
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                        Console.WriteLine("\nSomething happened when showing inventory. \nPlease Contact Trent about this.");
+                        Console.WriteLine("\nSomething bad happened when showing the inventory. \nPlease Contact Trent about this.");
                     }
                     
                     Console.WriteLine("Use item? (y/n)");
@@ -61,7 +64,8 @@ namespace loot
                         
                         if(itemChoice == "potion")
                         {
-                            Console.WriteLine("\nYou drink the potion, and are ready for battle!");
+                            Console.WriteLine("\nYou drink the potion, and feel your wounds begin to heal immediately." + 
+                                              "\nYour health is restored to " + playerMaxHealth);
                             playerHealth = playerMaxHealth;
                             playerInventory.Remove(itemChoice);
                         }
@@ -74,7 +78,7 @@ namespace loot
                         }
                         else if (itemChoice == "sword")
                         {
-                            Console.WriteLine("You swing the sword at the air. Nothing happens.");
+                            Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
                         }
                         else
                         {
@@ -181,6 +185,7 @@ namespace loot
             else
             {
                 Console.WriteLine("The enemy's speed gives it an advantage.");
+                Console.WriteLine("You take 1 point of damage");
                 playerHealth--;
             }
         }
