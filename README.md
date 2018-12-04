@@ -1,9 +1,9 @@
 # Loot
-You, a lone adventurer, braves the dark depths of a dungeon. How long can you survive?
+You, a lone adventurer, braves the dark depths of a dungeon in search of a richer life. How long can you survive?
 
-What's new in version 2:
-  <br>-Use items in inventory
-  <br>-New game over/exit screen
+What's new in version 3:
+  <br>-Fancy new menu screen
+  <br>-Quitting or dying takes you back to menu.
   
 What's planned:
   <br>-Statistics
