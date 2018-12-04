@@ -1,4 +1,11 @@
-﻿using System;
+﻿/**
+ * Loot
+ * 
+ * Original game mady by Trent Nagy
+ */
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +27,9 @@ namespace loot
             MainMenu();
         }
 
+        /**
+         * Fancy menu screen
+         */
         public static void MainMenu()
         {
             Console.Clear();
@@ -30,6 +40,9 @@ namespace loot
             PromptMenu();
         }
 
+        /**
+         * Handles menu selection
+         */
         public static void PromptMenu()
         {
             Console.WriteLine("New Game");
@@ -41,9 +54,9 @@ namespace loot
             if (menuChoice.ToLower() == "new game")
             {
                 Console.Clear();
-                Console.WriteLine("While eavesdropping on a conversation in town, you hear of the Dungeon that contains" +
+                Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
                 "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
-                "\nwith nothing to lose, you enter the Dungeon whilist clutching your sword close to you.\n");
+                "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
 
                 PromptUser();
             }
