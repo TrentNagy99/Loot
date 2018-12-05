@@ -6,6 +6,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace loot
 {
@@ -97,21 +99,24 @@ namespace loot
                     try
                     {
                         BinaryReader reader = new BinaryReader(new FileStream("savestate", FileMode.Open));
+
                         explorationsLasted = reader.ReadInt32();
                         enemiesSlain = reader.ReadInt32();
                         potionsDrank = reader.ReadInt32();
                         crystalsUsed = reader.ReadInt32();
+
                         player.MaxHealth = reader.ReadInt32();
                         player.Health = reader.ReadInt32();
 
-                        while (reader.BaseStream.Position != reader.BaseStream.Length)
+                        while(reader.BaseStream.Position != reader.BaseStream.Length)
                         {
-                            playerInventory.Add(reader.ReadString());
+                            playerInventory.Add(Decrypt(reader.ReadString()));
                         }
 
                         Console.Clear();
                         playerInventory.Remove("sword");
                         reader.Close();
+
                         PromptUser();
                     }
                     catch (Exception ex)
@@ -255,7 +260,7 @@ namespace loot
                             writer.Write(player.Health);
                             foreach (string item in playerInventory)
                             {
-                                writer.Write(item);
+                                writer.Write(Crypt(item));
                             }
                             Console.WriteLine("Game saved successfully!\n");
                             writer.Close();
@@ -451,6 +456,27 @@ namespace loot
             Console.Clear();
             Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.");
             player.Health -= 2;
+        }
+
+        private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        private static byte[] iv = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        public static string Crypt(string text)
+        {
+            SymmetricAlgorithm algorithm = DES.Create();
+            ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
+            byte[] inputbuffer = Encoding.Unicode.GetBytes(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            return Convert.ToBase64String(outputBuffer);
+        }
+
+        public static string Decrypt(string text)
+        {
+            SymmetricAlgorithm algorithm = DES.Create();
+            ICryptoTransform transform = algorithm.CreateDecryptor(key, iv);
+            byte[] inputbuffer = Convert.FromBase64String(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            return Encoding.Unicode.GetString(outputBuffer);
         }
     }
 }
