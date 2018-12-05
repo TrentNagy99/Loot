@@ -8,34 +8,18 @@ namespace loot
 {
     class Player
     {
-        private int _maxHealth;
-        private int _health;
-        private int _gold;
-
         public Player()
         {
-            _maxHealth = 5;
-            _health = 5;
-            _gold = 0;
+            MaxHealth = 5;
+            Health = 5;
+            Gold = 0;
         }
 
-        public int Health
-        {
-            get { return _health; }
-            set { _health = value; }
-        }
+        public int Health { get; set; }
 
-        public int Gold
-        {
-            get { return _gold; }
-            set { _gold = value; }
-        }
+        public int Gold { get; set; }
 
-        public int MaxHealth
-        {
-            get { return _maxHealth; }
-            set { _maxHealth = value; }
-        }
+        public int MaxHealth { get; set; }
 
         public static void Hit()
         {

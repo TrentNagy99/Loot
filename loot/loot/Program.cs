@@ -124,7 +124,6 @@ namespace loot
                         Console.WriteLine(ex.Message);
                         Console.Read();
                     }
-
                     break;
                 //The program will break if this isn't here.
                 case "":
@@ -228,9 +227,9 @@ namespace loot
                         Random rand = new Random();
                         int chance = rand.Next(50);
 
-                        if (chance >= 0 && chance <= 20)
+                        if (chance >= 0 && chance <= 30)
                             FindChest();
-                        else if (chance >= 21 && chance <= 40)
+                        else if (chance >= 31 && chance <= 40)
                             FindEnemy();
                         else if (chance >= 41 && chance <= 50)
                             FindTrap();
@@ -387,7 +386,7 @@ namespace loot
 
                         chance = rand.Next(100);
 
-                        if (chance > 50)
+                        if (chance > 70)
                         {
                             Console.WriteLine("The enemy hits you for 1 damage.\n");
                             player.Health--;
@@ -411,7 +410,7 @@ namespace loot
 
                         chance = rand.Next(100);
 
-                        if (chance > 50)
+                        if (chance > 70)
                         {
                             Console.WriteLine("The enemy hits you for 1 damage.\n");
                             player.Health--;
