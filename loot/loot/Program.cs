@@ -3,13 +3,9 @@
  * 
  * Original game mady by Trent Nagy
  */
-
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace loot
 {
@@ -96,8 +92,30 @@ namespace loot
                     Environment.Exit(0);
                     break;
                 case "continue":
-                    Console.WriteLine("Coming soon.\n");
-                    PromptMenu();
+                    try
+                    {
+                        BinaryReader reader = new BinaryReader(new FileStream("savestate", FileMode.Open));
+                        explorationsLasted = reader.ReadInt32();
+                        enemiesSlain = reader.ReadInt32();
+                        potionsDrank = reader.ReadInt32();
+                        crystalsUsed = reader.ReadInt32();
+                        playerMaxHealth = reader.ReadInt32();
+                        playerHealth = reader.ReadInt32();
+                        while (reader.BaseStream.Position != reader.BaseStream.Length)
+                        {
+                            playerInventory.Add(reader.ReadString());
+                        }
+                        Console.Clear();
+                        playerInventory.Remove("sword");
+                        reader.Close();
+                        PromptUser();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.Read();
+                    }
+
                     break;
                 //The program will break if this isn't here.
                 case "":
@@ -117,112 +135,146 @@ namespace loot
          */ 
         public static void PromptUser()
         {
-            if(playerHealth >= 1)
+            if (playerHealth >= 1)
             {
                 Console.WriteLine("You have " + playerHealth + " health\n");
                 Console.WriteLine("1) View Inventory\n" +
                                   "2) Explore\n" +
                                   "3) View Stats\n" +
-                                  "4) Exit\n");
+                                  "4) Save\n" +
+                                  "5) Exit\n");
                 string input = Console.ReadLine();
 
-                if (input == "1")
+                //Show the inventory, and ask player  if they want to use an item.
+                switch (input)
                 {
-                    // Catch an exception if there's a problem with printing out the inventory list.
-                    try
-                    {
-                        Console.WriteLine("\n-----Inventory-----");
-                        for (int i = 0; i < playerInventory.Count; i++)
-                            Console.WriteLine(playerInventory[i]);
-
-                        Console.WriteLine("-------------------\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine("\nSomething bad happened when showing the inventory. \nPlease Contact Trent about this.");
-                    }
-                    
-                    Console.WriteLine("Use item? (y/n)");
-                    string useItemYorN = Console.ReadLine();
-
-                    if(useItemYorN.ToLower() == "y")
-                    {
-                        Console.WriteLine("\nWhich one? (use the item name)");
-                        string itemChoice = Console.ReadLine();
-
-                        switch (itemChoice.ToLower())
+                    //Show the player's inventory, ask if they want to use an item
+                    case "1":
+                        // Catch an exception if there's a problem with printing out the inventory list.
+                        try
                         {
-                            //Potion
-                            case "potion":
-                                Console.WriteLine("\nYou drink the potion, and feel your wounds begin to heal immediately." +
-                                              "\nYour health is restored to " + playerMaxHealth);
-                                playerHealth = playerMaxHealth;
-                                playerInventory.Remove("potion");
-                                potionsDrank++;
-                                break;
-                            //Health crystal
-                            case "health crystal":
-                            case "crystal":
-                                Console.WriteLine("\nThe crystal responds to your desire for greatness.");
-                                Console.WriteLine("Your max health is increased by 1.");
-                                playerMaxHealth++;
-                                playerInventory.Remove("health crystal");
-                                crystalsUsed++;
-                                break;
-                            //Sword
-                            case "sword":
-                                Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
-                                break;
-                            //Unknown
-                            default:
-                                Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.");
-                                break;
+                            Console.WriteLine("\n-----Inventory-----");
+                            for (int i = 0; i < playerInventory.Count; i++)
+                                Console.WriteLine(playerInventory[i]);
+
+                            Console.WriteLine("-------------------\n");
                         }
-                    }
-                    else if (useItemYorN.ToLower() == "n")
-                    {
-                        Console.WriteLine("\nYou decide not to use anything.");
-                    }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("\nSomething bad happened when showing the inventory. \nPlease Contact Trent about this.");
+                        }
 
-                    PromptUser();
-                }
-                else if(input == "2")
-                {
-                    Console.WriteLine("\nYou explore the dungeon further.\n");
-                    explorationsLasted++;
+                        Console.WriteLine("Use item? (y/n)");
+                        string useItemYorN = Console.ReadLine();
 
-                    Random rand = new Random();
-                    int chance = rand.Next(50);
+                        if (useItemYorN.ToLower() == "y")
+                        {
+                            Console.WriteLine("\nWhich one? (use the item name)");
+                            string itemChoice = Console.ReadLine();
+                            Console.Clear();
 
-                    if(chance >= 0 && chance <= 20)
-                        FindChest();
-                    else if (chance >= 21 && chance <= 40)
-                        FindEnemy();
-                    else if (chance >= 41 && chance <= 50)
-                        FindTrap();
+                            switch (itemChoice.ToLower())
+                            {
+                                //Potion
+                                case "potion":
+                                    Console.WriteLine("You drink the potion, and feel your wounds begin to heal immediately." +
+                                                  "\nYour health is restored to " + playerMaxHealth + "\n");
+                                    playerHealth = playerMaxHealth;
+                                    playerInventory.Remove("potion");
+                                    potionsDrank++;
+                                    break;
+                                //Health crystal
+                                case "health crystal":
+                                case "crystal":
+                                    Console.WriteLine("The crystal responds to your desire for greatness.");
+                                    Console.WriteLine("Your max health is increased by 1.\n");
+                                    playerMaxHealth++;
+                                    playerInventory.Remove("health crystal");
+                                    crystalsUsed++;
+                                    break;
+                                //Sword
+                                case "sword":
+                                    Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
+                                    break;
+                                //Unknown
+                                default:
+                                    Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.");
+                                    break;
+                            }
+                        }
+                        else if (useItemYorN.ToLower() == "n")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You decide not to use anything.");
+                        }
 
-                    PromptUser();
-                }
-                else if(input == "3")
-                {
-                    Console.WriteLine("\nExplorations lasted: " + explorationsLasted +
-                                      "\nEnemies slain: " + enemiesSlain + 
-                                      "\nPotions Drank: " + potionsDrank + 
+                        PromptUser();
+                        break;
+                    //Explore the dungeon
+                    case "2":
+                        Console.WriteLine("\nYou explore the dungeon further.\n");
+                        explorationsLasted++;
+
+                        Random rand = new Random();
+                        int chance = rand.Next(50);
+
+                        if (chance >= 0 && chance <= 20)
+                            FindChest();
+                        else if (chance >= 21 && chance <= 40)
+                            FindEnemy();
+                        else if (chance >= 41 && chance <= 50)
+                            FindTrap();
+
+                        PromptUser();
+                        break;
+                    //Show player stats
+                    case "3":
+                        Console.WriteLine("\nExplorations lasted: " + explorationsLasted +
+                                      "\nEnemies slain: " + enemiesSlain +
+                                      "\nPotions Drank: " + potionsDrank +
                                       "\nCrystals used: " + crystalsUsed + "\n");
-                    PromptUser();
-                }
-                else if(input == "4")
-                {
-                    Console.WriteLine("\nYou decide to retire your days of adventuring.");
-                    Console.WriteLine("\n\nPress enter to leave the dungeon.");
-                    Console.Read();
-                    MainMenu();
-                }
-                else
-                {
-                    Console.WriteLine("You don't think \"" + input + "\" is a viable option.\n");
-                    PromptUser();
+                        PromptUser();
+                        break;
+                    //Save the game
+                    case "4":
+                        try
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
+                            BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
+                            writer.Write(explorationsLasted);
+                            writer.Write(enemiesSlain);
+                            writer.Write(potionsDrank);
+                            writer.Write(crystalsUsed);
+                            writer.Write(playerMaxHealth);
+                            writer.Write(playerHealth);
+                            foreach(string item in playerInventory)
+                            {
+                                writer.Write(item);
+                            }
+                            Console.WriteLine("Game saved successfully!\n");
+                            writer.Close();
+                            PromptUser();
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine(ex.Message + "\n Cannot create file.");
+                            Console.Read();
+                        }
+                        break;
+                    //Return to menu
+                    case "5":
+                        Console.WriteLine("\nYou decide to retire your days of adventuring.");
+                        Console.WriteLine("\n\nPress enter to leave the dungeon.");
+                        Console.Read();
+                        MainMenu();
+                        break;
+                    //Unknown
+                    default:
+                        Console.WriteLine("You don't think \"" + input + "\" is a viable option.\n");
+                        PromptUser();
+                        break;
                 }
             }
             else
@@ -242,15 +294,16 @@ namespace loot
         {
             Random rand = new Random();
             int chance = rand.Next(50);
+            Console.Clear();
 
             if(chance >= 0 && chance <= 10)
             {
-                Console.WriteLine("You find a health crystal!");
+                Console.WriteLine("You find a health crystal!\n");
                 playerInventory.Add(possibleLoot[0]);
             }
             else if(chance >= 11)
             {
-                Console.WriteLine("You find a potion!");
+                Console.WriteLine("You find a potion!\n");
                 playerInventory.Add(possibleLoot[1]);
             }
         }
@@ -260,6 +313,7 @@ namespace loot
          */
         public static void FindEnemy()
         {
+            Console.Clear();
             Random rand = new Random();
             int chance = rand.Next(30);
 
@@ -297,6 +351,7 @@ namespace loot
 
         public static void FindTrap()
         {
+            Console.Clear();
             Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.");
             playerHealth -= 2;
         }
