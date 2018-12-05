@@ -145,7 +145,7 @@ namespace loot
         {
             if (player.Health >= 1)
             {
-                Console.WriteLine("You have " + player.Health + " health\n");
+                
                 Console.WriteLine("1) View Inventory\n" +
                                   "2) Explore\n" +
                                   "3) View Stats\n" +
@@ -161,6 +161,9 @@ namespace loot
                         // Catch an exception if there's a problem with printing out the inventory list.
                         try
                         {
+                            Console.WriteLine("\nYou have " + player.Health + " health");
+                            Console.WriteLine("You have " + player.Gold + " gold");
+
                             Console.WriteLine("\n-----Inventory-----");
                             for (int i = 0; i < playerInventory.Count; i++)
                                 Console.WriteLine(playerInventory[i]);
@@ -214,7 +217,7 @@ namespace loot
                         else if (useItemYorN.ToLower() == "n")
                         {
                             Console.Clear();
-                            Console.WriteLine("You decide not to use anything.");
+                            Console.WriteLine("You decide not to use anything.\n");
                         }
 
                         PromptUser();
@@ -302,12 +305,12 @@ namespace loot
 
             if (chance >= 0 && chance <= 10)
             {
-                Console.WriteLine("You find a health crystal!\n");
+                Console.WriteLine("You find a health crystal.\n");
                 playerInventory.Add(possibleLoot[0]);
             }
             else if (chance >= 11)
             {
-                Console.WriteLine("You find a potion!\n");
+                Console.WriteLine("You find a potion.\n");
                 playerInventory.Add(possibleLoot[1]);
             }
         }
@@ -395,6 +398,7 @@ namespace loot
                         else if(enemyHealth < 0)
                         {
                             Console.WriteLine("The enemy is defeated!\n");
+                            ObtainGold();
                             enemiesSlain++;
                             PromptUser();
                         }
@@ -425,6 +429,11 @@ namespace loot
                 }
                 else
                 {
+                    if (player.Health <= 0)
+                    {
+                        Player.Die();
+                    }
+
                     Console.Clear();
                     Random rand = new Random();
                     int chance = rand.Next(100);
@@ -445,7 +454,8 @@ namespace loot
             }
             else
             {
-                Console.WriteLine("The enemy is defeated!");
+                Console.WriteLine("The enemy is defeated!\n");
+                ObtainGold();
                 PromptUser();
             }
         }
@@ -453,8 +463,17 @@ namespace loot
         public static void FindTrap()
         {
             Console.Clear();
-            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.");
+            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.\n");
             player.Health -= 2;
+        }
+
+        public static void ObtainGold()
+        {
+            Random rand = new Random();
+            int chance = rand.Next(100);
+            int totalGold = chance + (100 * (player.Level / 2));
+            player.Gold += totalGold;
+            Console.WriteLine("You've obtained " + totalGold + " gold.\n");
         }
 
         private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };

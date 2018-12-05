@@ -13,6 +13,7 @@ namespace loot
             MaxHealth = 5;
             Health = 5;
             Gold = 0;
+            Level = 1;
         }
 
         public int Health { get; set; }
@@ -20,6 +21,8 @@ namespace loot
         public int Gold { get; set; }
 
         public int MaxHealth { get; set; }
+
+        public int Level { get; set; }
 
         public static void Hit()
         {
