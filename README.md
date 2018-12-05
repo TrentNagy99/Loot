@@ -1,8 +1,9 @@
 # Loot
 You, a lone adventurer, braves the dark depths of a dungeon in search of a richer life. How long can you survive?
 
-What's new in version 4:
-  <br>-You can now save and load your game!
+What's new in version 5:
+  <br>-New combat system!
+  <br>-Code refactoring
   
 What's planned:
   <br>-Generations
