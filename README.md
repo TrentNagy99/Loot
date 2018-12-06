@@ -5,9 +5,11 @@ What's new in version 5:
   <br>-New combat system!
   <br>-Code refactoring
   
+What's being worked on:
+  <br>-Shop
+  
 What's planned:
   <br>-Generations
-  <br>-Shop
   <br>-View previous progress
   
 Check in later for new changes!
