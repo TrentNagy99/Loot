@@ -259,22 +259,38 @@ namespace loot
                     case "4":
                         try
                         {
+                            //First, clear the console.
                             Console.Clear();
+                            //Then, tell the player the game is trying to save
                             Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
+
+                            //Create a BinaryWriter
                             BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
+
+                            //Write the stats
                             writer.Write(explorationsLasted);
                             writer.Write(enemiesSlain);
                             writer.Write(goldObtained);
                             writer.Write(potionsDrank);
                             writer.Write(crystalsUsed);
+
+                            //Write player information
                             writer.Write(player.MaxHealth);
                             writer.Write(player.Health);
                             writer.Write(player.Gold);
+
+                            //Write player inventory
                             foreach (string item in playerInventory)
                             {
                                 writer.Write(Crypt(item));
                             }
+
+                            //Tell the user it succeeded.
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Game saved successfully!\n");
+                            Console.ResetColor();
+                           
+                            //Close the writer, prompt the user.
                             writer.Close();
                             PromptUser();
                         }
@@ -343,6 +359,16 @@ namespace loot
         }
 
         /**
+         * This method activates if the player encounters a trap.
+         */
+        public static void FindTrap()
+        {
+            Console.Clear();
+            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.\n");
+            player.Health -= 2;
+        }
+
+        /**
          * This method activated when the player fights an enemy.
          */
         public static void InitiateCombat(string enemy)
@@ -374,6 +400,9 @@ namespace loot
             }
         }
 
+        /**
+         * This method is used when a player is in combat.
+         */
         public static void PromptBattle()
         {
             if(enemyHealth > 0) //Only prompt battle if enemy's HP is 0
@@ -456,13 +485,9 @@ namespace loot
             }
         }
 
-        public static void FindTrap()
-        {
-            Console.Clear();
-            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.\n");
-            player.Health -= 2;
-        }
-
+        /**
+         * This method is activated when a player slays an enemy.
+         */
         public static void ObtainGold()
         {
             Random rand = new Random();
