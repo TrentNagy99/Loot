@@ -13,6 +13,13 @@ namespace loot
 {
     class Program
     {
+        public static IDictionary<string, int> allItems = new Dictionary<string, int>()
+        {
+            {"sword", 5}, {"wakizashi", 15}, {"steel shortsword", 25}, {"iron greatsword", 30},
+            {"potion", 50}, {"health crystal", 200},
+            {"leather armor", 30}, {"iron armor", 60}, {"steel armor", 90}
+        };
+
         public static List<string> playerInventory = new List<string> { "sword" };
         public static List<string> possibleLoot = new List<string> { "health crystal", "potion" };
         public static List<string> armorerInventory = new List<string> { "leather armor" };
@@ -512,7 +519,8 @@ namespace loot
         {
             Console.WriteLine("1) Armorer\n" +
                               "2) Blacksmith\n" +
-                              "3) Alchemist Shop\n");
+                              "3) Alchemist Shop\n" +
+                              "4) Enter The Dungeon");
             string choice = Console.ReadLine();
 
             switch (choice)
@@ -525,6 +533,11 @@ namespace loot
                     break;
                 case "3":
                     PromptAlchemy();
+                    break;
+                case "4":
+                    PromptUser();
+                    break;
+                default:
                     break;
             }
         }
@@ -601,8 +614,22 @@ namespace loot
             switch (choice.ToLower())
             {
                 case "1":
+                    Console.WriteLine("Alright, here's what I got.\n");
 
+                    Console.WriteLine("-----Inventory-----");
+                    for (int i = 0; i < Program.blacksmithInventory.Count; i++)
+                        Console.WriteLine(Program.blacksmithInventory[i]);
+                    Console.WriteLine("-------------------\n");
+
+                    Console.WriteLine("So, what will you buy?");
+                    choice = Console.ReadLine();
+
+                    if (Program.blacksmithInventory.Contains(choice))
+                    {
+                        
+                    }
                     break;
+
                 case "2":
                     Console.WriteLine("Alright, what do you have?\n");
 
@@ -620,9 +647,9 @@ namespace loot
                             if (Program.playerInventory.Contains("sword"))
                             {
                                 Console.WriteLine("Hmm, here's 5 gold for that sword.\n");
-                                Program.playerInventory.Remove("sword");
-                                Program.blacksmithInventory.Add("sword");
-                                Program.player.Gold += 5;
+                                Program.playerInventory.Remove(choice);
+                                Program.blacksmithInventory.Add(choice);
+                                Program.player.Gold += Program.allItems[choice];
                                 PromptBlacksmith();
                             }
                             else
@@ -632,16 +659,52 @@ namespace loot
                             }
                             break;
 
-                        case "steel sword":
-
+                        case "steel shortsword":
+                            if (Program.playerInventory.Contains("steel shortsword"))
+                            {
+                                Console.WriteLine("Hmm, here's 25 gold for that steel shortsword.\n");
+                                Program.playerInventory.Remove("steel shortsword");
+                                Program.blacksmithInventory.Add("steel shortsword");
+                                Program.player.Gold += 25;
+                                PromptBlacksmith();
+                            }
+                            else
+                            {
+                                Console.WriteLine("You search your inventory for a steel shortsword, but can't find one.\n");
+                                PromptBlacksmith();
+                            }
                             break;
 
                         case "wakizashi":
-
+                            if (Program.playerInventory.Contains("wakizashi"))
+                            {
+                                Console.WriteLine("Hmm, here's 15 gold for that wakizashi.\n");
+                                Program.playerInventory.Remove("wakizashi");
+                                Program.blacksmithInventory.Add("wakizashi");
+                                Program.player.Gold += 15;
+                                PromptBlacksmith();
+                            }
+                            else
+                            {
+                                Console.WriteLine("You search your inventory for a wakizashi, but can't find one.\n");
+                                PromptBlacksmith();
+                            }
                             break;
 
                         case "iron greatsword":
-
+                            if (Program.playerInventory.Contains("iron greatsword"))
+                            {
+                                Console.WriteLine("Hmm, here's 30 gold for that iron greatsword.\n");
+                                Program.playerInventory.Remove("iron greatsword");
+                                Program.blacksmithInventory.Add("iron greatsword");
+                                Program.player.Gold += 30;
+                                PromptBlacksmith();
+                            }
+                            else
+                            {
+                                Console.WriteLine("You search your inventory for an iron greatsword, but can't find one.\n");
+                                PromptBlacksmith();
+                            }
                             break;
                         default:
                             Console.WriteLine("Sorry, but I don't buy that kind of item.\n   ");
