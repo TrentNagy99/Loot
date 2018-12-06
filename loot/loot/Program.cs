@@ -102,11 +102,13 @@ namespace loot
 
                         explorationsLasted = reader.ReadInt32();
                         enemiesSlain = reader.ReadInt32();
+                        goldObtained = reader.ReadInt32();
                         potionsDrank = reader.ReadInt32();
                         crystalsUsed = reader.ReadInt32();
 
                         player.MaxHealth = reader.ReadInt32();
                         player.Health = reader.ReadInt32();
+                        player.Gold = reader.ReadInt32();
 
                         while(reader.BaseStream.Position != reader.BaseStream.Length)
                         {
@@ -117,12 +119,16 @@ namespace loot
                         playerInventory.Remove("sword");
                         reader.Close();
 
+                        Console.WriteLine("You have " + player.Health + " health");
+                        Console.WriteLine("You have " + player.Gold + " gold\n");
+
                         PromptUser();
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                         Console.Read();
+                        MainMenu();
                     }
                     break;
                 //The program will break if this isn't here.
@@ -161,7 +167,8 @@ namespace loot
                         // Catch an exception if there's a problem with printing out the inventory list.
                         try
                         {
-                            Console.WriteLine("\nYou have " + player.Health + " health");
+                            Console.Clear();
+                            Console.WriteLine("You have " + player.Health + " health");
                             Console.WriteLine("You have " + player.Gold + " gold");
 
                             Console.WriteLine("\n-----Inventory-----");
@@ -173,7 +180,7 @@ namespace loot
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.WriteLine("\nSomething bad happened when showing the inventory. \nPlease Contact Trent about this.");
+                            Console.WriteLine("\nSomething bad happened when showing the inventory. Please Contact Trent about this.");
                         }
 
                         Console.WriteLine("Use item? (y/n)");
@@ -256,10 +263,12 @@ namespace loot
                             BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
                             writer.Write(explorationsLasted);
                             writer.Write(enemiesSlain);
+                            writer.Write(goldObtained);
                             writer.Write(potionsDrank);
                             writer.Write(crystalsUsed);
                             writer.Write(player.MaxHealth);
                             writer.Write(player.Health);
+                            writer.Write(player.Gold);
                             foreach (string item in playerInventory)
                             {
                                 writer.Write(Crypt(item));
@@ -366,12 +375,13 @@ namespace loot
 
         public static void PromptBattle()
         {
-            if(enemyHealth > 0)
+            if(enemyHealth > 0) //Only prompt battle if enemy's HP is 0
             {
                 if(player.Health <= 0)
                 {
                     Player.Die();
                 }
+
                 Console.WriteLine("What do you do?\n" +
                               "1) Attack enemy\n" +
                               "2) Run Away\n");
@@ -389,18 +399,14 @@ namespace loot
 
                         chance = rand.Next(100);
 
-                        if (chance > 70)
+                        if(enemyHealth <= 0)
                         {
-                            Console.WriteLine("The enemy hits you for 1 damage.\n");
-                            player.Health--;
-                            PromptBattle();
+                            Enemy.Die();
                         }
-                        else if(enemyHealth < 0)
+
+                        if (chance > 70) //30% chance to get hit by the enemy
                         {
-                            Console.WriteLine("The enemy is defeated!\n");
-                            ObtainGold();
-                            enemiesSlain++;
-                            PromptUser();
+                            Enemy.Hit();
                         }
                         else
                         {
@@ -416,9 +422,7 @@ namespace loot
 
                         if (chance > 70)
                         {
-                            Console.WriteLine("The enemy hits you for 1 damage.\n");
-                            player.Health--;
-                            PromptBattle();
+                            Enemy.Hit();
                         }
                         else
                         {
@@ -429,11 +433,6 @@ namespace loot
                 }
                 else
                 {
-                    if (player.Health <= 0)
-                    {
-                        Player.Die();
-                    }
-
                     Console.Clear();
                     Random rand = new Random();
                     int chance = rand.Next(100);
@@ -446,17 +445,13 @@ namespace loot
                     else
                     {
                         Console.WriteLine("You failed to escape!");
-                        Console.WriteLine("The enemy hits your for 1 damage.");
-                        player.Health--;
-                        PromptBattle();
+                        Enemy.Hit();
                     }
                 }
             }
-            else
+            else //If the enemy has 0 health upon prompting battle
             {
-                Console.WriteLine("The enemy is defeated!\n");
-                ObtainGold();
-                PromptUser();
+                Enemy.Die();
             }
         }
 
