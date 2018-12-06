@@ -13,14 +13,14 @@ namespace loot
             Console.WriteLine("The enemy is defeated!\n");
             Program.ObtainGold();
             Program.enemiesSlain++;
-            Program.PromptUser();
+            Prompt.PromptUser();
         }
 
         public static void Hit()
         {
             Console.WriteLine("The enemy hits you for 1 damage.\n");
             Program.player.Health--;
-            Program.PromptBattle();
+            Prompt.PromptBattle();
         }
     }
 }

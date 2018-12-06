@@ -27,17 +27,13 @@ namespace loot
         public static int goldObtained = 0;
         //----Stats----
 
-        /**
-         *  Main 
-         */
+        //Main 
         static void Main(string[] args)
         {
             MainMenu();
         }
 
-        /**
-         * Fancy menu screen
-         */
+        //Fancy menu screen
         public static void MainMenu()
         {
             Console.Clear();
@@ -51,112 +47,141 @@ namespace loot
             playerInventory.Add("sword");
 
             string title = "==============================================\n" +
-                               "||||||||||||||||||||||||||||||||||||||||||||||\n" +
-                               "==============================================\n\n" +
-                               "  L           OOO          OOO       TTTTTTT  \n" +
-                               "  L          O   O        O   O         T     \n" +
-                               "  L         O     O      O     O        T     \n" +
-                               "  L         O     O      O     O        T     \n" +
-                               "  L          O   O        O   O         T     \n" +
-                               "  LLLLLL      OOO          OOO          T     \n\n" +
-                               "==============================================\n" +
-                               "||||||||||||||||||||||||||||||||||||||||||||||\n" +
-                               "==============================================\n";
+                           "||||||||||||||||||||||||||||||||||||||||||||||\n" +
+                           "==============================================\n\n" +
+                           "  L           OOO          OOO       TTTTTTT  \n" +
+                           "  L          O   O        O   O         T     \n" +
+                           "  L         O     O      O     O        T     \n" +
+                           "  L         O     O      O     O        T     \n" +
+                           "  L          O   O        O   O         T     \n" +
+                           "  LLLLLL      OOO          OOO          T     \n\n" +
+                           "==============================================\n" +
+                           "||||||||||||||||||||||||||||||||||||||||||||||\n" +
+                           "==============================================\n";
 
             Console.WriteLine(title);
 
-            PromptMenu();
+            Prompt.PromptMenu();
         }
 
-        /**
-         * Handles menu selection
-         */
-        public static void PromptMenu()
+        //This method activates if the player finds a chest while exploring
+        public static void FindChest()
         {
-            Console.WriteLine("New Game");
-            Console.WriteLine("Continue");
-            Console.WriteLine("Exit\n");
+            Random rand = new Random();
+            int chance = rand.Next(50);
+            Console.Clear();
 
-            string menuChoice = Console.ReadLine();
-
-            switch (menuChoice.ToLower())
+            if (chance >= 0 && chance <= 10)
             {
-                //New Game
-                case "new game":
-                case "new":
-                    Console.Clear();
-                    Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
-                    "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
-                    "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
-
-                    PromptUser();
-                    break;
-                //Exit game
-                case "exit":
-                    Environment.Exit(0);
-                    break;
-                case "continue":
-                    try
-                    {
-                        BinaryReader reader = new BinaryReader(new FileStream("savestate", FileMode.Open));
-
-                        explorationsLasted = reader.ReadInt32();
-                        enemiesSlain = reader.ReadInt32();
-                        goldObtained = reader.ReadInt32();
-                        potionsDrank = reader.ReadInt32();
-                        crystalsUsed = reader.ReadInt32();
-
-                        player.MaxHealth = reader.ReadInt32();
-                        player.Health = reader.ReadInt32();
-                        player.Gold = reader.ReadInt32();
-
-                        while(reader.BaseStream.Position != reader.BaseStream.Length)
-                        {
-                            playerInventory.Add(Decrypt(reader.ReadString()));
-                        }
-
-                        Console.Clear();
-                        playerInventory.Remove("sword");
-                        reader.Close();
-
-                        Console.WriteLine("You have " + player.Health + " health");
-                        Console.WriteLine("You have " + player.Gold + " gold\n");
-
-                        PromptUser();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        Console.Read();
-                        MainMenu();
-                    }
-                    break;
-                //The program will break if this isn't here.
-                case "":
-                    Console.Clear();
-                    MainMenu();
-                    break;
-                //Unknown selection
-                default:
-                    Console.WriteLine("\nThat feature hasn't been put in yet!\n");
-                    PromptMenu();
-                    break;
+                Console.WriteLine("You find a health crystal.\n");
+                playerInventory.Add(possibleLoot[0]);
+            }
+            else if (chance >= 11)
+            {
+                Console.WriteLine("You find a potion.\n");
+                playerInventory.Add(possibleLoot[1]);
             }
         }
 
-        /**
-         * Asks the player what they want to do.
-         */
+        //This method activates if the player finds an enemy while exploring
+        public static void FindEnemy()
+        {
+            Console.Clear();
+            Random rand = new Random();
+            int chance = rand.Next(30);
+
+            if (chance >= 0 && chance <= 10)
+                InitiateCombat("Goblin");
+            else if (chance >= 11 && chance <= 20)
+                InitiateCombat("Spider");
+            else if (chance >= 21 && chance <= 30)
+                InitiateCombat("Skeleton");
+        }
+
+        //This method activates if the player encounters a trap.
+        public static void FindTrap()
+        {
+            Console.Clear();
+            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.\n");
+            player.Health -= 2;
+        }
+
+        //This method activated when the player fights an enemy.
+        public static void InitiateCombat(string enemy)
+        {
+            Console.WriteLine("You start a fight with an enemy " + enemy + "!");
+            enemyHealth = 3;
+
+            Random rand = new Random();
+            int chance = rand.Next(50);
+
+            if (chance >= 0 && chance <= 25)
+            {
+                Console.WriteLine("Your natural speed lets you attack first.");
+                Player.Hit();
+                Prompt.PromptBattle();
+            }
+            else
+            {
+                Console.WriteLine("The enemy's speed gives it an advantage.");
+                Console.WriteLine("You take 1 point of damage\n");
+                player.Health--;
+
+                if(player.Health <= 0)
+                {
+                    Player.Die();
+                }
+
+                Prompt.PromptBattle();
+            }
+        }
+
+        //This method is activated when a player slays an enemy.
+        public static void ObtainGold()
+        {
+            Random rand = new Random();
+            int chance = rand.Next(100);
+            int totalGold = chance + (100 * (player.Level / 2));
+            player.Gold += totalGold;
+            goldObtained += totalGold;
+            Console.WriteLine("You've obtained " + totalGold + " gold.\n");
+        }
+
+        private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        private static byte[] iv = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        public static string Crypt(string text)
+        {
+            SymmetricAlgorithm algorithm = DES.Create();
+            ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
+            byte[] inputbuffer = Encoding.Unicode.GetBytes(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            return Convert.ToBase64String(outputBuffer);
+        }
+
+        public static string Decrypt(string text)
+        {
+            SymmetricAlgorithm algorithm = DES.Create();
+            ICryptoTransform transform = algorithm.CreateDecryptor(key, iv);
+            byte[] inputbuffer = Convert.FromBase64String(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            return Encoding.Unicode.GetString(outputBuffer);
+        }
+    }
+
+    class Prompt
+    {
+        //Asks the player what they want to do.
         public static void PromptUser()
         {
-            if (player.Health >= 1)
+            if (Program.player.Health >= 1)
             {
-                
+
                 Console.WriteLine("1) View Inventory\n" +
                                   "2) Explore\n" +
                                   "3) View Stats\n" +
                                   "4) Save\n" +
-                                  "5) Exit\n");
+                                  "5) Leave Dungeon\n");
                 string input = Console.ReadLine();
 
                 //Show the inventory, and ask player  if they want to use an item.
@@ -168,12 +193,12 @@ namespace loot
                         try
                         {
                             Console.Clear();
-                            Console.WriteLine("You have " + player.Health + " health");
-                            Console.WriteLine("You have " + player.Gold + " gold");
+                            Console.WriteLine("You have " + Program.player.Health + " health");
+                            Console.WriteLine("You have " + Program.player.Gold + " gold");
 
                             Console.WriteLine("\n-----Inventory-----");
-                            for (int i = 0; i < playerInventory.Count; i++)
-                                Console.WriteLine(playerInventory[i]);
+                            for (int i = 0; i < Program.playerInventory.Count; i++)
+                                Console.WriteLine(Program.playerInventory[i]);
 
                             Console.WriteLine("-------------------\n");
                         }
@@ -197,19 +222,19 @@ namespace loot
                                 //Potion
                                 case "potion":
                                     Console.WriteLine("You drink the potion, and feel your wounds begin to heal immediately." +
-                                                  "\nYour health is restored to " + player.MaxHealth + "\n");
-                                    player.Health = player.MaxHealth;
-                                    playerInventory.Remove("potion");
-                                    potionsDrank++;
+                                                  "\nYour health is restored to " + Program.player.MaxHealth + "\n");
+                                    Program.player.Health = Program.player.MaxHealth;
+                                    Program.playerInventory.Remove("potion");
+                                    Program.potionsDrank++;
                                     break;
                                 //Health crystal
                                 case "health crystal":
                                 case "crystal":
                                     Console.WriteLine("The crystal responds to your desire for greatness.");
                                     Console.WriteLine("Your max health is increased by 1.\n");
-                                    player.MaxHealth++;
-                                    playerInventory.Remove("health crystal");
-                                    crystalsUsed++;
+                                    Program.player.MaxHealth++;
+                                    Program.playerInventory.Remove("health crystal");
+                                    Program.crystalsUsed++;
                                     break;
                                 //Sword
                                 case "sword":
@@ -232,27 +257,27 @@ namespace loot
                     //Explore the dungeon
                     case "2":
                         Console.WriteLine("\nYou explore the dungeon further.\n");
-                        explorationsLasted++;
+                        Program.explorationsLasted++;
 
                         Random rand = new Random();
                         int chance = rand.Next(50);
 
                         if (chance >= 0 && chance <= 30)
-                            FindChest();
+                            Program.FindChest();
                         else if (chance >= 31 && chance <= 40)
-                            FindEnemy();
+                            Program.FindEnemy();
                         else if (chance >= 41 && chance <= 50)
-                            FindTrap();
+                            Program.FindTrap();
 
                         PromptUser();
                         break;
                     //Show player stats
                     case "3":
-                        Console.WriteLine("\nExplorations lasted: " + explorationsLasted +
-                                      "\nEnemies slain: " + enemiesSlain +
-                                      "\nPotions drank: " + potionsDrank +
-                                      "\nCrystals used: " + crystalsUsed + 
-                                      "\nGold obtained: " + goldObtained + "\n");
+                        Console.WriteLine("\nExplorations lasted: " + Program.explorationsLasted +
+                                      "\nEnemies slain: " + Program.enemiesSlain +
+                                      "\nPotions drank: " + Program.potionsDrank +
+                                      "\nCrystals used: " + Program.crystalsUsed +
+                                      "\nGold obtained: " + Program.goldObtained + "\n");
                         PromptUser();
                         break;
                     //Save the game
@@ -268,28 +293,28 @@ namespace loot
                             BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
 
                             //Write the stats
-                            writer.Write(explorationsLasted);
-                            writer.Write(enemiesSlain);
-                            writer.Write(goldObtained);
-                            writer.Write(potionsDrank);
-                            writer.Write(crystalsUsed);
+                            writer.Write(Program.explorationsLasted);
+                            writer.Write(Program.enemiesSlain);
+                            writer.Write(Program.goldObtained);
+                            writer.Write(Program.potionsDrank);
+                            writer.Write(Program.crystalsUsed);
 
                             //Write player information
-                            writer.Write(player.MaxHealth);
-                            writer.Write(player.Health);
-                            writer.Write(player.Gold);
+                            writer.Write(Program.player.MaxHealth);
+                            writer.Write(Program.player.Health);
+                            writer.Write(Program.player.Gold);
 
                             //Write player inventory
-                            foreach (string item in playerInventory)
+                            foreach (string item in Program.playerInventory)
                             {
-                                writer.Write(Crypt(item));
+                                writer.Write(Program.Crypt(item));
                             }
 
                             //Tell the user it succeeded.
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Game saved successfully!\n");
                             Console.ResetColor();
-                           
+
                             //Close the writer, prompt the user.
                             writer.Close();
                             PromptUser();
@@ -302,10 +327,7 @@ namespace loot
                         break;
                     //Return to menu
                     case "5":
-                        Console.WriteLine("\nYou decide to retire your days of adventuring.");
-                        Console.WriteLine("\n\nPress enter to leave the dungeon.");
-                        Console.Read();
-                        MainMenu();
+                        PromptTown();
                         break;
                     //Unknown
                     default:
@@ -320,94 +342,12 @@ namespace loot
             }
         }
 
-        /**
-         * This method activates if the player finds a chest while exploring
-         */
-        public static void FindChest()
-        {
-            Random rand = new Random();
-            int chance = rand.Next(50);
-            Console.Clear();
-
-            if (chance >= 0 && chance <= 10)
-            {
-                Console.WriteLine("You find a health crystal.\n");
-                playerInventory.Add(possibleLoot[0]);
-            }
-            else if (chance >= 11)
-            {
-                Console.WriteLine("You find a potion.\n");
-                playerInventory.Add(possibleLoot[1]);
-            }
-        }
-
-        /**
-         * This method activates if the player finds an enemy while exploring
-         */
-        public static void FindEnemy()
-        {
-            Console.Clear();
-            Random rand = new Random();
-            int chance = rand.Next(30);
-
-            if (chance >= 0 && chance <= 10)
-                InitiateCombat("Goblin");
-            else if (chance >= 11 && chance <= 20)
-                InitiateCombat("Spider");
-            else if (chance >= 21 && chance <= 30)
-                InitiateCombat("Skeleton");
-        }
-
-        /**
-         * This method activates if the player encounters a trap.
-         */
-        public static void FindTrap()
-        {
-            Console.Clear();
-            Console.WriteLine("You accidentally trip a wire trap! Arrows shoot out and hit you for 2 health.\n");
-            player.Health -= 2;
-        }
-
-        /**
-         * This method activated when the player fights an enemy.
-         */
-        public static void InitiateCombat(string enemy)
-        {
-            Console.WriteLine("You start a fight with an enemy " + enemy + "!");
-            enemyHealth = 3;
-
-            Random rand = new Random();
-            int chance = rand.Next(50);
-
-            if (chance >= 0 && chance <= 25)
-            {
-                Console.WriteLine("Your natural speed lets you attack first.");
-                Player.Hit();
-                PromptBattle();
-            }
-            else
-            {
-                Console.WriteLine("The enemy's speed gives it an advantage.");
-                Console.WriteLine("You take 1 point of damage\n");
-                player.Health--;
-
-                if(player.Health <= 0)
-                {
-                    Player.Die();
-                }
-
-                PromptBattle();
-            }
-        }
-
-        /**
-         * This method is used when a player is in combat.
-         */
+        //This method is used when a player is in combat.
         public static void PromptBattle()
         {
-            if(enemyHealth > 0) //Only prompt battle if enemy's HP is 0
+            if (Program.enemyHealth > 0) //Only prompt battle if enemy's HP is 0
             {
-                if(player.Health <= 0)
+                if (Program.player.Health <= 0)
                 {
                     Player.Die();
                 }
@@ -429,7 +369,7 @@ namespace loot
 
                         chance = rand.Next(100);
 
-                        if(enemyHealth <= 0)
+                        if (Program.enemyHealth <= 0)
                         {
                             Enemy.Die();
                         }
@@ -467,10 +407,10 @@ namespace loot
                     Random rand = new Random();
                     int chance = rand.Next(100);
 
-                    if(chance > 50)
+                    if (chance > 50)
                     {
                         Console.WriteLine("You successfully run away.");
-                        PromptUser();
+                        Prompt.PromptUser();
                     }
                     else
                     {
@@ -485,38 +425,127 @@ namespace loot
             }
         }
 
-        /**
-         * This method is activated when a player slays an enemy.
-         */
-        public static void ObtainGold()
+        //Handles menu selection
+        public static void PromptMenu()
         {
-            Random rand = new Random();
-            int chance = rand.Next(100);
-            int totalGold = chance + (100 * (player.Level / 2));
-            player.Gold += totalGold;
-            goldObtained += totalGold;
-            Console.WriteLine("You've obtained " + totalGold + " gold.\n");
+            Console.WriteLine("New Game");
+            Console.WriteLine("Continue");
+            Console.WriteLine("Exit\n");
+
+            string menuChoice = Console.ReadLine();
+
+            switch (menuChoice.ToLower())
+            {
+                //New Game
+                case "new game":
+                case "new":
+                    Console.Clear();
+                    Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
+                    "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
+                    "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
+
+                    Prompt.PromptUser();
+                    break;
+                //Exit game
+                case "exit":
+                    Environment.Exit(0);
+                    break;
+                case "continue":
+                    try
+                    {
+                        //Create a new BinaryReader
+                        BinaryReader reader = new BinaryReader(new FileStream("savestate", FileMode.Open));
+
+                        //Read the statistics
+                        Program.explorationsLasted = reader.ReadInt32();
+                        Program.enemiesSlain = reader.ReadInt32();
+                        Program.goldObtained = reader.ReadInt32();
+                        Program.potionsDrank = reader.ReadInt32();
+                        Program.crystalsUsed = reader.ReadInt32();
+
+                        //Read player information
+                        Program.player.MaxHealth = reader.ReadInt32();
+                        Program.player.Health = reader.ReadInt32();
+                        Program.player.Gold = reader.ReadInt32();
+
+                        //Read player inventory
+                        while (reader.BaseStream.Position != reader.BaseStream.Length)
+                        {
+                            Program.playerInventory.Add(Program.Decrypt(reader.ReadString()));
+                        }
+
+                        //Clear the console and close the reader
+                        Console.Clear();
+                        Program.playerInventory.Remove("sword");
+                        reader.Close();
+
+                        //Prompt the user.
+                        Console.WriteLine("You have " + Program.player.Health + " health");
+                        Console.WriteLine("You have " + Program.player.Gold + " gold\n");
+
+                        Prompt.PromptUser();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.Read();
+                        Program.MainMenu();
+                    }
+                    break;
+                //The program will break if this isn't here.
+                case "":
+                    Console.Clear();
+                    Program.MainMenu();
+                    break;
+                //Unknown selection
+                default:
+                    Console.WriteLine("\nThat feature hasn't been put in yet!\n");
+                    PromptMenu();
+                    break;
+            }
         }
 
-        private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
-        private static byte[] iv = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
-
-        public static string Crypt(string text)
+        //Prompt the user for what shop they want
+        public static void PromptTown()
         {
-            SymmetricAlgorithm algorithm = DES.Create();
-            ICryptoTransform transform = algorithm.CreateEncryptor(key, iv);
-            byte[] inputbuffer = Encoding.Unicode.GetBytes(text);
-            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
-            return Convert.ToBase64String(outputBuffer);
+            Console.WriteLine("1) Armorer\n" +
+                              "2) Blacksmith\n" +
+                              "3) Alchemist Shop\n");
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    PromptArmorer();
+                    break;
+                case "2":
+                    PromptBlacksmith();
+                    break;
+                case "3":
+                    PromptAlchemy();
+                    break;
+            }
         }
 
-        public static string Decrypt(string text)
+        //Prompt the user what they want to do in the armorer
+        public static void PromptArmorer()
         {
-            SymmetricAlgorithm algorithm = DES.Create();
-            ICryptoTransform transform = algorithm.CreateDecryptor(key, iv);
-            byte[] inputbuffer = Convert.FromBase64String(text);
-            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
-            return Encoding.Unicode.GetString(outputBuffer);
+            Console.WriteLine("1) Buy item\n" +
+                              "2) Sell item\n");
         }
+
+        //Prompt the user what they want to do in the blacksmith
+        public static void PromptBlacksmith()
+        {
+
+
+        }
+
+        //Prompt the user what they want to do in the alchemist's shop
+        public static void PromptAlchemy()
+        {
+
+        }
+
     }
 }
