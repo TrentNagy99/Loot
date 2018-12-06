@@ -250,8 +250,9 @@ namespace loot
                     case "3":
                         Console.WriteLine("\nExplorations lasted: " + explorationsLasted +
                                       "\nEnemies slain: " + enemiesSlain +
-                                      "\nPotions Drank: " + potionsDrank +
-                                      "\nCrystals used: " + crystalsUsed + "\n");
+                                      "\nPotions drank: " + potionsDrank +
+                                      "\nCrystals used: " + crystalsUsed + 
+                                      "\nGold obtained: " + goldObtained + "\n");
                         PromptUser();
                         break;
                     //Save the game
@@ -468,6 +469,7 @@ namespace loot
             int chance = rand.Next(100);
             int totalGold = chance + (100 * (player.Level / 2));
             player.Gold += totalGold;
+            goldObtained += totalGold;
             Console.WriteLine("You've obtained " + totalGold + " gold.\n");
         }
 
