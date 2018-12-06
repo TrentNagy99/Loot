@@ -15,6 +15,8 @@ namespace loot
     {
         public static List<string> playerInventory = new List<string> { "sword" };
         public static List<string> possibleLoot = new List<string> { "health crystal", "potion" };
+        public static List<string> armorerInventory = new List<string> { "leather armor" };
+        public static List<string> blacksmithInventory = new List<string> { "wakizashi", "iron greatsword"};
         public static Player player = new Player();
 
         public static int enemyHealth = 0;
@@ -505,7 +507,7 @@ namespace loot
             }
         }
 
-        //Prompt the user for what shop they want
+        //Prompt the user for what shop they want (unfinished)
         public static void PromptTown()
         {
             Console.WriteLine("1) Armorer\n" +
@@ -527,21 +529,145 @@ namespace loot
             }
         }
 
-        //Prompt the user what they want to do in the armorer
+        //Prompt the user what they want to do in the armorer (unfinished)
         public static void PromptArmorer()
         {
             Console.WriteLine("1) Buy item\n" +
-                              "2) Sell item\n");
+                              "2) Sell item\n" +
+                              "3) Rumors\n" + 
+                              "4) Leave shop");
+            string choice = Console.ReadLine();
+
+            switch (choice.ToLower())
+            {
+                case "1":
+                    
+                    break;
+                case "2":
+                    Console.WriteLine("Let's see what you got.\n");
+
+                    Console.WriteLine("-----Inventory-----");
+                    for (int i = 0; i < Program.playerInventory.Count; i++)
+                        Console.WriteLine(Program.playerInventory[i]);
+                    Console.WriteLine("-------------------\n");
+
+                    Console.WriteLine("What do you want to sell? (use item name)");
+                    choice = Console.ReadLine();
+
+                    switch (choice.ToLower())
+                    {
+                        case "leather armor":
+
+                            break;
+                        case "iron armor":
+
+                            break;
+                        case "steel armor":
+
+                            break;
+                        default:
+                            Console.WriteLine("Sorry, but I don't buy that kind of item.");
+                            PromptArmorer();
+                            break;
+                    }
+                    break;
+                    
+                case "3":
+                    Console.WriteLine("I don't know of any, no.\n");
+                    PromptArmorer();
+                    break;
+
+                case "4":
+                    Console.WriteLine("Good day.\n");
+                    PromptTown();
+                    break;
+
+                default:
+                    Console.WriteLine("I don't know about that.\n");
+                    PromptArmorer();
+                    break;
+            }
         }
 
-        //Prompt the user what they want to do in the blacksmith
+        //Prompt the user what they want to do in the blacksmith (unfinished)
         public static void PromptBlacksmith()
         {
+            Console.WriteLine("1) Buy item\n" +
+                              "2) Sell item\n" +
+                              "3) Rumors\n" +
+                              "4) Leave shop\n");
+            string choice = Console.ReadLine();
 
+            switch (choice.ToLower())
+            {
+                case "1":
 
+                    break;
+                case "2":
+                    Console.WriteLine("Alright, what do you have?\n");
+
+                    Console.WriteLine("-----Inventory-----");
+                    for (int i = 0; i < Program.playerInventory.Count; i++)
+                        Console.WriteLine(Program.playerInventory[i]);
+                    Console.WriteLine("-------------------\n");
+
+                    Console.WriteLine("What do you want to sell? (use item name)\n");
+                    choice = Console.ReadLine();
+
+                    switch (choice.ToLower())
+                    {
+                        case "sword":
+                            if (Program.playerInventory.Contains("sword"))
+                            {
+                                Console.WriteLine("Hmm, here's 5 gold for that sword.\n");
+                                Program.playerInventory.Remove("sword");
+                                Program.blacksmithInventory.Add("sword");
+                                Program.player.Gold += 5;
+                                PromptBlacksmith();
+                            }
+                            else
+                            {
+                                Console.WriteLine("You search your inventory for your old sword, but can't find it.\n");
+                                PromptBlacksmith();
+                            }
+                            break;
+
+                        case "steel sword":
+
+                            break;
+
+                        case "wakizashi":
+
+                            break;
+
+                        case "iron greatsword":
+
+                            break;
+                        default:
+                            Console.WriteLine("Sorry, but I don't buy that kind of item.\n   ");
+                            PromptBlacksmith();
+                            break;
+                    }
+                    break;
+
+                case "3":
+                    Console.WriteLine("I don't know of any, no.\n");
+                    PromptBlacksmith();
+                    break;
+
+                case "4":
+                    Console.WriteLine("Good day.\n");
+                    PromptTown();
+                    break;
+
+                default:
+                    Console.WriteLine("I don't know about that.\n");
+                    PromptBlacksmith();
+                    break;
+            }
         }
 
-        //Prompt the user what they want to do in the alchemist's shop
+        //Prompt the user what they want to do in the alchemist's shop (unfinished)
         public static void PromptAlchemy()
         {
 
