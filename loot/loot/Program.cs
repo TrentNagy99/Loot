@@ -1,7 +1,7 @@
 ﻿/**
  * Loot
  * 
- * Original game mady by Trent Nagy
+ * Original game made by Trent Nagy
  */
 using System;
 using System.Collections.Generic;
@@ -15,15 +15,17 @@ namespace loot
     {
         public static IDictionary<string, int> allItems = new Dictionary<string, int>()
         {
-            {"sword", 5}, {"wakizashi", 15}, {"steel shortsword", 25}, {"iron greatsword", 30},
+            {"sword", 5}, {"wakizashi", 15}, {"iron shortsword", 25}, {"iron greatsword", 30},
             {"potion", 50}, {"health crystal", 200},
-            {"leather armor", 30}, {"iron armor", 60}, {"steel armor", 90}
         };
 
         public static List<string> playerInventory = new List<string> { "sword" };
         public static List<string> possibleLoot = new List<string> { "health crystal", "potion" };
-        public static List<string> armorerInventory = new List<string> { "leather armor" };
+
+        //Blacksmith
         public static List<string> blacksmithInventory = new List<string> { "wakizashi", "iron greatsword"};
+        public static List<string> blacksmithBuyableItems = new List<string> { "sword", "wakizashi", "iron shortsword", "iron greatsword" };
+
         public static Player player = new Player();
 
         public static int enemyHealth = 0;
@@ -149,8 +151,8 @@ namespace loot
         public static void ObtainGold()
         {
             Random rand = new Random();
-            int chance = rand.Next(100);
-            int totalGold = chance + (100 * (player.Level / 2));
+            int chance = rand.Next(10);
+            int totalGold = chance + (10 * (player.Level / 2));
             player.Gold += totalGold;
             goldObtained += totalGold;
             Console.WriteLine("You've obtained " + totalGold + " gold.\n");
@@ -271,9 +273,9 @@ namespace loot
                         Random rand = new Random();
                         int chance = rand.Next(50);
 
-                        if (chance >= 0 && chance <= 30)
+                        if (chance >= 0 && chance <= 20)
                             Program.FindChest();
-                        else if (chance >= 31 && chance <= 40)
+                        else if (chance >= 21 && chance <= 40)
                             Program.FindEnemy();
                         else if (chance >= 41 && chance <= 50)
                             Program.FindTrap();
@@ -517,87 +519,29 @@ namespace loot
         //Prompt the user for what shop they want (unfinished)
         public static void PromptTown()
         {
-            Console.WriteLine("1) Armorer\n" +
-                              "2) Blacksmith\n" +
-                              "3) Alchemist Shop\n" +
-                              "4) Enter The Dungeon");
+            Console.WriteLine("The town is full of people going in and out of shops.\n");
+            Console.WriteLine("1) Blacksmith\n" +
+                              "2) Alchemist Shop\n" +
+                              "3) Enter The Dungeon");
             string choice = Console.ReadLine();
 
             switch (choice)
             {
                 case "1":
-                    PromptArmorer();
-                    break;
-                case "2":
                     PromptBlacksmith();
                     break;
-                case "3":
+                case "2":
                     PromptAlchemy();
                     break;
-                case "4":
+                case "3":
+                    Console.Clear();
+                    Console.WriteLine("You arrive back at The Dungeon.\n");
                     PromptUser();
                     break;
                 default:
-                    break;
-            }
-        }
-
-        //Prompt the user what they want to do in the armorer (unfinished)
-        public static void PromptArmorer()
-        {
-            Console.WriteLine("1) Buy item\n" +
-                              "2) Sell item\n" +
-                              "3) Rumors\n" + 
-                              "4) Leave shop");
-            string choice = Console.ReadLine();
-
-            switch (choice.ToLower())
-            {
-                case "1":
-                    
-                    break;
-                case "2":
-                    Console.WriteLine("Let's see what you got.\n");
-
-                    Console.WriteLine("-----Inventory-----");
-                    for (int i = 0; i < Program.playerInventory.Count; i++)
-                        Console.WriteLine(Program.playerInventory[i]);
-                    Console.WriteLine("-------------------\n");
-
-                    Console.WriteLine("What do you want to sell? (use item name)");
-                    choice = Console.ReadLine();
-
-                    switch (choice.ToLower())
-                    {
-                        case "leather armor":
-
-                            break;
-                        case "iron armor":
-
-                            break;
-                        case "steel armor":
-
-                            break;
-                        default:
-                            Console.WriteLine("Sorry, but I don't buy that kind of item.");
-                            PromptArmorer();
-                            break;
-                    }
-                    break;
-                    
-                case "3":
-                    Console.WriteLine("I don't know of any, no.\n");
-                    PromptArmorer();
-                    break;
-
-                case "4":
-                    Console.WriteLine("Good day.\n");
+                    Console.Clear();
+                    Console.WriteLine("You cannot find that here.\n");
                     PromptTown();
-                    break;
-
-                default:
-                    Console.WriteLine("I don't know about that.\n");
-                    PromptArmorer();
                     break;
             }
         }
@@ -605,33 +549,74 @@ namespace loot
         //Prompt the user what they want to do in the blacksmith (unfinished)
         public static void PromptBlacksmith()
         {
+            Console.WriteLine("Swords of all shapes and sizes line the walls of the blacksmith.\n");
+
             Console.WriteLine("1) Buy item\n" +
                               "2) Sell item\n" +
-                              "3) Rumors\n" +
-                              "4) Leave shop\n");
+                              "3) Leave shop\n");
             string choice = Console.ReadLine();
 
             switch (choice.ToLower())
             {
                 case "1":
-                    Console.WriteLine("Alright, here's what I got.\n");
+                    Console.WriteLine("\n\"Alright, here's what I got.\"\n");
 
                     Console.WriteLine("-----Inventory-----");
                     for (int i = 0; i < Program.blacksmithInventory.Count; i++)
                         Console.WriteLine(Program.blacksmithInventory[i]);
                     Console.WriteLine("-------------------\n");
 
-                    Console.WriteLine("So, what will you buy?");
+                    Console.WriteLine("\"So, what will you buy?\"");
                     choice = Console.ReadLine();
 
                     if (Program.blacksmithInventory.Contains(choice))
                     {
-                        
+                        int value = 0;
+                        Program.allItems.TryGetValue(choice, out value);
+
+                        Console.WriteLine("\"Hmm, you know what? I'll charge you " + value + " for my " + choice + "\"");
+
+                        Console.WriteLine("\nDo you accept? (y/n)");
+                        string input = Console.ReadLine();
+
+                        if(input.ToLower() == "y")
+                        {
+                            if (Program.player.Gold < value)
+                            {
+                                Console.WriteLine("\"Come back when you get more gold for it.\"\n");
+                                Console.Read();
+                                PromptTown();
+                            }
+                            else
+                            {
+                                Console.WriteLine("\"It's a done deal, then.\"\n");
+                                Program.playerInventory.Add(choice);
+                                Program.player.Gold -= Program.allItems[choice];
+                                Program.blacksmithInventory.Remove(choice);
+                                Console.Read();
+                                PromptBlacksmith();
+                            }
+                        }
+                        else if(input.ToLower() == "n")
+                        {
+                            Console.WriteLine("\"Another time, perhaps?\"\n");
+                            PromptBlacksmith();
+                        }
+                        else
+                        {
+                            Console.WriteLine("\"It's a simple \'Yes\' or \'No\'.\"");
+                            PromptBlacksmith();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\"I don't sell that item.\"\n");
+                        PromptBlacksmith();
                     }
                     break;
 
                 case "2":
-                    Console.WriteLine("Alright, what do you have?\n");
+                    Console.WriteLine("\"Alright, what do you have?\"\n");
 
                     Console.WriteLine("-----Inventory-----");
                     for (int i = 0; i < Program.playerInventory.Count; i++)
@@ -641,91 +626,61 @@ namespace loot
                     Console.WriteLine("What do you want to sell? (use item name)\n");
                     choice = Console.ReadLine();
 
-                    switch (choice.ToLower())
+                    if (Program.playerInventory.Contains(choice))
                     {
-                        case "sword":
-                            if (Program.playerInventory.Contains("sword"))
-                            {
-                                Console.WriteLine("Hmm, here's 5 gold for that sword.\n");
-                                Program.playerInventory.Remove(choice);
-                                Program.blacksmithInventory.Add(choice);
-                                Program.player.Gold += Program.allItems[choice];
-                                PromptBlacksmith();
-                            }
-                            else
-                            {
-                                Console.WriteLine("You search your inventory for your old sword, but can't find it.\n");
-                                PromptBlacksmith();
-                            }
-                            break;
-
-                        case "steel shortsword":
-                            if (Program.playerInventory.Contains("steel shortsword"))
-                            {
-                                Console.WriteLine("Hmm, here's 25 gold for that steel shortsword.\n");
-                                Program.playerInventory.Remove("steel shortsword");
-                                Program.blacksmithInventory.Add("steel shortsword");
-                                Program.player.Gold += 25;
-                                PromptBlacksmith();
-                            }
-                            else
-                            {
-                                Console.WriteLine("You search your inventory for a steel shortsword, but can't find one.\n");
-                                PromptBlacksmith();
-                            }
-                            break;
-
-                        case "wakizashi":
-                            if (Program.playerInventory.Contains("wakizashi"))
-                            {
-                                Console.WriteLine("Hmm, here's 15 gold for that wakizashi.\n");
-                                Program.playerInventory.Remove("wakizashi");
-                                Program.blacksmithInventory.Add("wakizashi");
-                                Program.player.Gold += 15;
-                                PromptBlacksmith();
-                            }
-                            else
-                            {
-                                Console.WriteLine("You search your inventory for a wakizashi, but can't find one.\n");
-                                PromptBlacksmith();
-                            }
-                            break;
-
-                        case "iron greatsword":
-                            if (Program.playerInventory.Contains("iron greatsword"))
-                            {
-                                Console.WriteLine("Hmm, here's 30 gold for that iron greatsword.\n");
-                                Program.playerInventory.Remove("iron greatsword");
-                                Program.blacksmithInventory.Add("iron greatsword");
-                                Program.player.Gold += 30;
-                                PromptBlacksmith();
-                            }
-                            else
-                            {
-                                Console.WriteLine("You search your inventory for an iron greatsword, but can't find one.\n");
-                                PromptBlacksmith();
-                            }
-                            break;
-                        default:
-                            Console.WriteLine("Sorry, but I don't buy that kind of item.\n   ");
+                        Console.Clear();
+                        if (!Program.blacksmithBuyableItems.Contains(choice))
+                        {
+                            Console.WriteLine("\"I don't buy that kind of item.\"\n");
+                            Console.Read();
                             PromptBlacksmith();
-                            break;
+                        }
+                        else
+                        {
+                            int value = 0;
+                            Program.allItems.TryGetValue(choice, out value);
+
+                            Console.WriteLine("\"For you, i'll give you " + value + " for that " + choice + ".\"\n");
+                            Console.WriteLine("Do you accept? (y/n)");
+                            string input = Console.ReadLine();
+
+                            if (input.ToLower() == "y")
+                            {
+                                Console.WriteLine("\"It's a done deal, then.\"\n");
+                                Program.playerInventory.Remove(choice);
+                                Program.player.Gold += Program.allItems[choice];
+                                Program.blacksmithInventory.Add(choice);
+                                Console.Read();
+                                PromptBlacksmith();
+                            }
+                            else if (input.ToLower() == "n")
+                            {
+                                Console.WriteLine("\"Another time, perhaps?\"\n");
+                                PromptBlacksmith();
+                            }
+                            else
+                            {
+                                Console.WriteLine("\"It's a simple \'Yes\' or \'No\'.\"");
+                                PromptBlacksmith();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("You look for a " + choice + ", but cannot find one.\n");
+                        PromptBlacksmith();
                     }
                     break;
 
                 case "3":
-                    Console.WriteLine("I don't know of any, no.\n");
-                    PromptBlacksmith();
-                    break;
-
-                case "4":
-                    Console.WriteLine("Good day.\n");
+                    Console.WriteLine("\"Good day.\"\n");
                     PromptTown();
                     break;
 
                 default:
-                    Console.WriteLine("I don't know about that.\n");
+                    Console.WriteLine("\"I don't know about that.\"\n");
                     PromptBlacksmith();
+                    
                     break;
             }
         }
