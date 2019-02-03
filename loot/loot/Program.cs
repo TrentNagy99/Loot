@@ -22,9 +22,14 @@ namespace loot
         public static List<string> blacksmithInventory = new List<string> { "wakizashi", "iron greatsword"};
         public static List<string> blacksmithBuyableItems = new List<string> { "sword", "wakizashi", "iron shortsword", "iron greatsword" };
 
+        //Alchemist
+        public static List<string> alchemistInventory = new List<string> { "potion", "potion", "potion", "health crystal"};
+        public static List<string> alchemistBuyableItems = new List<string> { "potion", "health crystal" };
+
         public static Player player = new Player();
 
-        public static int enemyHealth = 0;
+        public static int enemyHealth = player.Level + 10;
+
 
         //----Stats----
         public static int explorationsLasted = 0;
@@ -148,7 +153,7 @@ namespace loot
         {
             Random rand = new Random();
             int chance = rand.Next(10);
-            int totalGold = chance + (10 * (player.Level / 2));
+            int totalGold = chance + (10 * player.Level);
             player.Gold += totalGold;
             goldObtained += totalGold;
             Console.WriteLine("You've obtained " + totalGold + " gold.\n");
@@ -334,6 +339,7 @@ namespace loot
                         break;
                     //Return to menu
                     case "5":
+                        Console.Clear();
                         PromptTown();
                         break;
                     //Unknown
@@ -524,10 +530,12 @@ namespace loot
             switch (choice)
             {
                 case "1":
+                    Console.Clear();
                     PromptBlacksmith();
                     break;
                 case "2":
-                    PromptAlchemy();
+                    Console.Clear();
+                    PromptAlchemist();
                     break;
                 case "3":
                     Console.Clear();
@@ -682,9 +690,145 @@ namespace loot
         }
 
         //Prompt the user what they want to do in the alchemist's shop (unfinished)
-        public static void PromptAlchemy()
+        public static void PromptAlchemist()
         {
+            
+            Console.WriteLine("In the corner, a cauldron bubbles as the smell of ingredients invades your nose.\n");
 
+            Console.WriteLine("1) Buy item\n" +
+                              "2) Sell item\n" +
+                              "3) Leave shop\n");
+            string choice = Console.ReadLine();
+
+            switch (choice.ToLower())
+            {
+                case "1":
+                    Console.Clear();
+                    Console.WriteLine("\"I've got plenty of potions for you.\"\n");
+
+                    Console.WriteLine("-----Inventory-----");
+                    for (int i = 0; i < Program.alchemistInventory.Count; i++)
+                        Console.WriteLine(Program.alchemistInventory[i]);
+                    Console.WriteLine("-------------------\n");
+
+                    Console.WriteLine("\"What will it be?\"");
+                    choice = Console.ReadLine();
+
+                    if (Program.alchemistInventory.Contains(choice))
+                    {
+                        int value = 0;
+                        Program.allItems.TryGetValue(choice, out value);
+
+                        Console.WriteLine("\n\"It'll cost you " + value + " for this " + choice + "\"");
+
+                        Console.WriteLine("\nIs that okay? (y/n)");
+                        string input = Console.ReadLine();
+
+                        if (input.ToLower() == "y")
+                        {
+                            Console.Clear();
+                            if (Program.player.Gold < value)
+                            {
+                                Console.WriteLine("\"Im sorry, but you're going to need more gold for this.\"\n");
+                                PromptAlchemist();
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine("\"Thank you for your business.\"\n");
+                                Program.playerInventory.Add(choice);
+                                Program.player.Gold -= Program.allItems[choice];
+                                Program.alchemistInventory.Remove(choice);
+                                Console.Read();
+                                
+                                PromptAlchemist();
+                            }
+                        }
+                        else if (input.ToLower() == "n")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\"It's okay, take your time.\"\n");
+                            PromptAlchemist();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\"Was that a \'Yes\' or \'No\'?\"");
+                            PromptAlchemist();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\"I'm sorry, but I don't have any.\"\n");
+                        PromptAlchemist();
+                    }
+                    break;
+                case "2":
+                    Console.WriteLine("\"Okay, let's see what you have.\"\n");
+
+                    Console.WriteLine("-----Inventory-----");
+                    for (int i = 0; i < Program.playerInventory.Count; i++)
+                        Console.WriteLine(Program.playerInventory[i]);
+                    Console.WriteLine("-------------------\n");
+
+                    Console.WriteLine("What do you want to sell? (use item name)\n");
+                    choice = Console.ReadLine();
+
+                    if (Program.playerInventory.Contains(choice))
+                    {
+                        Console.Clear();
+                        if (!Program.alchemistBuyableItems.Contains(choice))
+                        {
+                            Console.WriteLine("\"Oh, i'm sorry, i'm not in the market for that.\"\n");
+                            PromptAlchemist();
+                        }
+                        else
+                        {
+                            int value = 0;
+                            Program.allItems.TryGetValue(choice, out value);
+
+                            Console.WriteLine("\"I can spare " + value + "gold for your " + choice + ".\"\n");
+                            Console.WriteLine("Is that okay? (y/n)");
+                            string input = Console.ReadLine();
+
+                            if (input.ToLower() == "y")
+                            {
+                                Console.Clear();
+                                Console.WriteLine("\"Thank you!\"\n");
+                                Program.playerInventory.Remove(choice);
+                                Program.player.Gold += Program.allItems[choice];
+                                Program.alchemistInventory.Add(choice);
+                                PromptAlchemist();
+                            }
+                            else if (input.ToLower() == "n")
+                            {
+                                Console.Clear();
+                                Console.WriteLine("\"Another time, perhaps?\"\n");
+                                PromptAlchemist();
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine("\"Was that a \'Yes\' or \'No\'?\"");
+                                PromptAlchemist();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("You look for a " + choice + ", but cannot find one.\n");
+                        PromptBlacksmith();
+                    }
+                    break;
+                case "3":
+                    Console.Clear();
+                    Console.WriteLine("\"Have a good one!\"\n");
+                    PromptTown();
+                    break;
+                default:
+                    PromptAlchemist();
+                    break;
+            }
         }
 
     }
