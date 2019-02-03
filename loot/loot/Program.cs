@@ -1,8 +1,4 @@
-﻿/**
- * Loot
- * 
- * Original game made by Trent Nagy
- */
+﻿
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -216,7 +212,7 @@ namespace loot
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.WriteLine("\nSomething bad happened when showing the inventory. Please Contact Trent about this.");
+                            Console.WriteLine("\nSomething bad happened when showing the inventory. Please contact me about this.");
                         }
 
                         Console.WriteLine("Use item? (y/n)");
