@@ -15,6 +15,11 @@ namespace loot
             {"potion", 50}, {"health crystal", 200},
         };
 
+        public static IDictionary<string, int> itemDamage = new Dictionary<string, int>()
+        {
+            {"sword", 2}, {"wakizashi", 3}, {"iron shortsword", 4}, {"iron greatsword", 5}
+        };
+
         public static List<string> playerInventory = new List<string> { "sword" };
         public static List<string> possibleLoot = new List<string> { "health crystal", "potion" };
 
@@ -57,6 +62,7 @@ namespace loot
             crystalsUsed = 0;
             playerInventory.Clear();
             playerInventory.Add("sword");
+            
 
             string title = "==============================================\n" +
                            "||||||||||||||||||||||||||||||||||||||||||||||\n" +
@@ -80,18 +86,27 @@ namespace loot
         public static void FindChest()
         {
             Random rand = new Random();
-            int chance = rand.Next(50);
+            int chance = rand.Next(100);
             Console.Clear();
 
-            if (chance >= 0 && chance <= 10)
+            //Health Crystal
+            if (chance >= 0 && chance <= 5)
             {
                 Console.WriteLine("You find a health crystal.\n");
                 playerInventory.Add(possibleLoot[0]);
             }
-            else if (chance >= 11)
+            //Potion
+            else if (chance >= 11 && chance <= 40)
             {
                 Console.WriteLine("You find a potion.\n");
                 playerInventory.Add(possibleLoot[1]);
+            }
+            //Gold
+            else
+            {
+                int chestGold = (rand.Next(5) + player.Level);
+                Console.WriteLine("You found " + chestGold + " gold.\n");
+                player.Gold += chestGold;
             }
         }
 
@@ -118,6 +133,13 @@ namespace loot
             player.Health -= 2;
         }
 
+        public static void FindNothing()
+        {
+            Console.Clear();
+            Console.WriteLine("You delve further into the dungeon.\n");
+            Prompt.PromptUser();
+        }
+
         //This method activated when the player fights an enemy.
         public static void InitiateCombat(string enemy)
         {
@@ -130,7 +152,9 @@ namespace loot
             if (chance >= 0 && chance <= 25)
             {
                 Console.WriteLine("Your natural speed lets you attack first.");
-                Player.Hit();
+                int value = 0;
+                itemDamage.TryGetValue(player.Equipped, out value);
+                Player.Hit(value);
                 Prompt.PromptBattle();
             }
             else
@@ -248,14 +272,27 @@ namespace loot
                                     Program.playerInventory.Remove("health crystal");
                                     Program.crystalsUsed++;
                                     break;
-                                //Sword
-                                case "sword":
-                                    Console.WriteLine("You swing the sword at the air, hoping to hit something. Nothing happens.\n");
-                                    break;
-                                //Unknown
                                 default:
-                                    Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.");
-                                    break;
+                                    if (Program.itemDamage.ContainsKey(itemChoice))
+                                    {
+                                        if(Program.player.Equipped == itemChoice)
+                                        {
+                                            Console.WriteLine("You already have that item equipped\n");
+                                            PromptUser();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("You decide to equip the " + itemChoice + "\n");
+                                            Program.player.Equipped = itemChoice;
+                                            PromptUser();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("You look, but cannot find " + itemChoice + " in your inventory.\n");
+                                        PromptUser();
+                                    }
+                                break;
                             }
                         }
                         else if (useItemYorN.ToLower() == "n")
@@ -272,7 +309,7 @@ namespace loot
                         Program.explorationsLasted++;
 
                         Random rand = new Random();
-                        int chance = rand.Next(50);
+                        int chance = rand.Next(100);
 
                         if (chance >= 0 && chance <= 20)
                             Program.FindChest();
@@ -280,6 +317,8 @@ namespace loot
                             Program.FindEnemy();
                         else if (chance >= 41 && chance <= 50)
                             Program.FindTrap();
+                        else
+                            Program.FindNothing();
 
                         PromptUser();
                         break;
@@ -358,6 +397,9 @@ namespace loot
         //This method is used when a player is in combat.
         public static void PromptBattle()
         {
+            int value = 0;
+            Program.itemDamage.TryGetValue(Program.player.Equipped, out value);
+
             if (Program.enemyHealth > 0) //Only prompt battle if enemy's HP is 0
             {
                 if (Program.player.Health <= 0)
@@ -378,7 +420,7 @@ namespace loot
 
                     if (chance > 50)
                     {
-                        Player.Hit();
+                        Player.Hit(value);
 
                         chance = rand.Next(100);
 
@@ -422,7 +464,7 @@ namespace loot
 
                     if (chance > 50)
                     {
-                        Console.WriteLine("You successfully run away.");
+                        Console.WriteLine("You successfully run away.\n");
                         Prompt.PromptUser();
                     }
                     else
@@ -577,7 +619,7 @@ namespace loot
                     {
                         int value = 0;
                         Program.allItems.TryGetValue(choice, out value);
-
+                        Console.Clear();
                         Console.WriteLine("\"Hmm, you know what? I'll charge you " + value + " for my " + choice + "\"");
 
                         Console.WriteLine("\nDo you accept? (y/n)");
@@ -587,17 +629,17 @@ namespace loot
                         {
                             if (Program.player.Gold < value)
                             {
+                                Console.Clear();
                                 Console.WriteLine("\"Come back when you get more gold for it.\"\n");
-                                Console.Read();
                                 PromptTown();
                             }
                             else
                             {
+                                Console.Clear();
                                 Console.WriteLine("\"It's a done deal, then.\"\n");
                                 Program.playerInventory.Add(choice);
                                 Program.player.Gold -= Program.allItems[choice];
                                 Program.blacksmithInventory.Remove(choice);
-                                Console.Read();
                                 PromptBlacksmith();
                             }
                         }
@@ -677,11 +719,13 @@ namespace loot
                     break;
 
                 case "3":
+                    Console.Clear();
                     Console.WriteLine("\"Good day.\"\n");
                     PromptTown();
                     break;
 
                 default:
+                    Console.Clear();
                     Console.WriteLine("\"I don't know about that.\"\n");
                     PromptBlacksmith();
                     

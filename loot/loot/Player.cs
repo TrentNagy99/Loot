@@ -12,9 +12,10 @@ namespace loot
         {
             MaxHealth = 5;
             Health = 5;
-            Gold = 0;
+            Gold = 100;
             Level = 1;
             Experience = 0;
+            Equipped = "sword";
         }
 
         public int Health { get; set; }
@@ -27,10 +28,12 @@ namespace loot
 
         public int Experience { get; set; }
 
-        public static void Hit()
+        public string Equipped { get; set; }
+
+        public static void Hit(int value)
         {
-            Console.WriteLine("You hit your enemy for 2 damage.\n");
-            Program.enemyHealth -= 2;
+            Console.WriteLine("You hit your enemy for " + value + " damage.\n");
+            Program.enemyHealth -= value;
         }
 
         public static void Die()
