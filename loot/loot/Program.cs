@@ -354,6 +354,7 @@ namespace loot
                             writer.Write(Program.player.MaxHealth);
                             writer.Write(Program.player.Health);
                             writer.Write(Program.player.Gold);
+                            writer.Write(Program.player.Equipped);
 
                             //Write player inventory
                             foreach (string item in Program.playerInventory)
@@ -499,7 +500,7 @@ namespace loot
                     "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
                     "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
 
-                    Prompt.PromptUser();
+                    PromptUser();
                     break;
                 //Exit game
                 case "exit":
@@ -522,6 +523,7 @@ namespace loot
                         Program.player.MaxHealth = reader.ReadInt32();
                         Program.player.Health = reader.ReadInt32();
                         Program.player.Gold = reader.ReadInt32();
+                        Program.player.Equipped = reader.ReadString();
 
                         //Read player inventory
                         while (reader.BaseStream.Position != reader.BaseStream.Length)
@@ -538,7 +540,7 @@ namespace loot
                         Console.WriteLine("You have " + Program.player.Health + " health");
                         Console.WriteLine("You have " + Program.player.Gold + " gold\n");
 
-                        Prompt.PromptUser();
+                        PromptUser();
                     }
                     catch (Exception ex)
                     {

@@ -12,7 +12,7 @@ namespace loot
         {
             MaxHealth = 5;
             Health = 5;
-            Gold = 100;
+            Gold = 0;
             Level = 1;
             Experience = 0;
             Equipped = "sword";
