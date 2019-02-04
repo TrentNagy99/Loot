@@ -17,7 +17,12 @@ namespace loot
 
         public static IDictionary<string, int> itemDamage = new Dictionary<string, int>()
         {
-            {"sword", 2}, {"wakizashi", 3}, {"iron shortsword", 4}, {"iron greatsword", 5}
+            {"fists", 1}, {"sword", 2}, {"wakizashi", 3}, {"iron shortsword", 4}, {"iron greatsword", 5}
+        };
+
+        public static IDictionary<int, int> levels = new Dictionary<int, int>()
+        {
+            {1, 0}, {2, 300}, {3, 900}, {4, 2700}, {5, 6500}, {6, 14000}, {7, 23000}, {8, 34000}, {9, 48000}, {10, 64000}
         };
 
         public static List<string> playerInventory = new List<string> { "sword" };
@@ -694,11 +699,15 @@ namespace loot
 
                             if (input.ToLower() == "y")
                             {
+                                Console.Clear();
                                 Console.WriteLine("\"It's a done deal, then.\"\n");
+                                if(Program.player.Equipped == choice)
+                                {
+                                    Program.player.Equipped = "fists";
+                                }
                                 Program.playerInventory.Remove(choice);
                                 Program.player.Gold += Program.allItems[choice];
                                 Program.blacksmithInventory.Add(choice);
-                                Console.Read();
                                 PromptBlacksmith();
                             }
                             else if (input.ToLower() == "n")
