@@ -40,6 +40,8 @@ namespace loot
 
         public static int enemyHealth = player.Level + 10;
 
+        public static int nextMilestone = levels[player.Level + 1];
+
 
         //----Stats----
         public static int explorationsLasted = 0;
@@ -81,6 +83,7 @@ namespace loot
                            "==============================================\n" +
                            "||||||||||||||||||||||||||||||||||||||||||||||\n" +
                            "==============================================\n";
+
 
             Console.WriteLine(title);
 
@@ -138,6 +141,7 @@ namespace loot
             player.Health -= 2;
         }
 
+        //This method activates if the player finds nothing while adventuring
         public static void FindNothing()
         {
             Console.Clear();
@@ -149,7 +153,7 @@ namespace loot
         public static void InitiateCombat(string enemy)
         {
             Console.WriteLine("You start a fight with an enemy " + enemy + "!");
-            enemyHealth = 3;
+            enemyHealth = 3 + player.Level;
 
             Random rand = new Random();
             int chance = rand.Next(50);
@@ -186,6 +190,21 @@ namespace loot
             player.Gold += totalGold;
             goldObtained += totalGold;
             Console.WriteLine("You've obtained " + totalGold + " gold.\n");
+        }
+
+        //This method activates when the player obtains exp
+        public static void ObtainEXP()
+        {
+            Console.WriteLine("You obtained 50 EXP.\n");
+            player.Experience += 50;
+
+            if(player.Experience >= nextMilestone)
+            {
+                Console.WriteLine("Congratulations! You have leveled up.\n");
+                player.Level++;
+                nextMilestone = levels[player.Level + 1];
+                Prompt.PromptUser();
+            }
         }
 
         private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -316,11 +335,11 @@ namespace loot
                         Random rand = new Random();
                         int chance = rand.Next(100);
 
-                        if (chance >= 0 && chance <= 20)
+                        if (chance >= 0 && chance <= 25)
                             Program.FindChest();
-                        else if (chance >= 21 && chance <= 40)
+                        else if (chance >= 26 && chance <= 44)
                             Program.FindEnemy();
-                        else if (chance >= 41 && chance <= 50)
+                        else if (chance >= 45 && chance <= 50)
                             Program.FindTrap();
                         else
                             Program.FindNothing();
@@ -422,11 +441,11 @@ namespace loot
                 {
                     Console.Clear();
                     Random rand = new Random();
-                    int chance = rand.Next(100);
+                    int chance = rand.Next(20);
 
-                    if (chance > 50)
+                    if (chance > 10)
                     {
-                        Player.Hit(value);
+                        Player.Hit(value + Program.player.Level);
 
                         chance = rand.Next(100);
 
@@ -842,7 +861,7 @@ namespace loot
                             int value = 0;
                             Program.allItems.TryGetValue(choice, out value);
 
-                            Console.WriteLine("\"I can spare " + value + "gold for your " + choice + ".\"\n");
+                            Console.WriteLine("\"I can spare " + value + " gold for your " + choice + ".\"\n");
                             Console.WriteLine("Is that okay? (y/n)");
                             string input = Console.ReadLine();
 

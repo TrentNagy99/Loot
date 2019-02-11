@@ -13,6 +13,7 @@ namespace loot
             Console.WriteLine("The enemy is defeated!\n");
             Program.ObtainGold();
             Program.enemiesSlain++;
+            Program.ObtainEXP();
             Prompt.PromptUser();
         }
 
