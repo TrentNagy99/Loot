@@ -352,7 +352,8 @@ namespace loot
                                       "\nEnemies slain: " + Program.enemiesSlain +
                                       "\nPotions drank: " + Program.potionsDrank +
                                       "\nCrystals used: " + Program.crystalsUsed +
-                                      "\nGold obtained: " + Program.goldObtained + "\n");
+                                      "\nGold obtained: " + Program.goldObtained + 
+                                      "\nPlayer level: " + Program.player.Level);
                         PromptUser();
                         break;
                     //Save the game
@@ -379,6 +380,7 @@ namespace loot
                             writer.Write(Program.player.Health);
                             writer.Write(Program.player.Gold);
                             writer.Write(Program.player.Equipped);
+                            writer.Write(Program.player.Level);
 
                             //Write player inventory
                             foreach (string item in Program.playerInventory)
@@ -548,6 +550,7 @@ namespace loot
                         Program.player.Health = reader.ReadInt32();
                         Program.player.Gold = reader.ReadInt32();
                         Program.player.Equipped = reader.ReadString();
+                        Program.player.Level = reader.ReadInt32();
 
                         //Read player inventory
                         while (reader.BaseStream.Position != reader.BaseStream.Length)
