@@ -146,6 +146,39 @@ namespace loot
             player.Health -= 2;
         }
 
+        //This method activates if the player finds a page of a journal
+        public static void FindJournal()
+        {
+            Console.Clear();
+            Console.WriteLine("You found a journal. Would you like to read it? (y/n)");
+
+            string choice = Console.ReadLine();
+
+            if(choice.ToLower() == "y")
+            {
+                Journal journal = new Journal();
+                Random rand = new Random();
+                int chance = rand.Next(Journal.entries.Count);
+
+                Console.Clear();
+                Console.WriteLine(Journal.entries[chance]);
+                Prompt.PromptUser();
+            }
+            else if(choice.ToLower() == "n")
+            {
+                Console.Clear();
+                Console.WriteLine("You decide not to read it.\n");
+                Prompt.PromptUser();
+            }
+            else
+            {
+                Console.Clear();
+                FindJournal();
+            }
+
+            
+        }
+
         //This method activates if the player finds nothing while adventuring
         public static void FindNothing()
         {
@@ -346,6 +379,8 @@ namespace loot
                             Program.FindEnemy();
                         else if (chance >= 45 && chance <= 50)
                             Program.FindTrap();
+                        else if (chance == 51)
+                            Program.FindJournal();
                         else
                             Program.FindNothing();
 
@@ -412,6 +447,10 @@ namespace loot
                     case "5":
                         Console.Clear();
                         PromptTown();
+                        break;
+                    case "6":
+                        Console.Clear();
+                        Program.FindJournal();
                         break;
                     //Unknown
                     default:
