@@ -30,12 +30,6 @@ namespace loot
 
         public string Equipped { get; set; }
 
-        public static void Hit(int value)
-        {
-            Console.WriteLine("You hit your enemy for " + value + " damage.\n");
-            Program.enemyHealth -= value;
-        }
-
         public static void Die()
         {
             Console.WriteLine("Your days of adventuring are cut short as you collapse to the floor.\n\n");

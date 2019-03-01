@@ -20,11 +20,6 @@ namespace loot
             {"fists", 1}, {"sword", 2}, {"wakizashi", 3}, {"iron shortsword", 4}, {"iron greatsword", 5}
         };
 
-        public static IDictionary<string, int> weaponUnlock = new Dictionary<string, int>()
-        {
-
-        };
-
         public static IDictionary<int, int> levels = new Dictionary<int, int>()
         {
             {1, 0}, {2, 300}, {3, 900}, {4, 2700}, {5, 6500}, {6, 14000}, {7, 23000}, {8, 34000}, {9, 48000}, {10, 64000}
@@ -43,10 +38,7 @@ namespace loot
 
         public static Player player = new Player();
 
-        public static int enemyHealth = player.Level + 10;
-
         public static int nextMilestone = levels[player.Level + 1];
-
 
         //----Stats----
         public static int explorationsLasted = 0;
@@ -74,7 +66,6 @@ namespace loot
             crystalsUsed = 0;
             playerInventory.Clear();
             playerInventory.Add("sword");
-            
 
             string title = "==============================================\n" +
                            "||||||||||||||||||||||||||||||||||||||||||||||\n" +
@@ -89,9 +80,7 @@ namespace loot
                            "||||||||||||||||||||||||||||||||||||||||||||||\n" +
                            "==============================================\n";
 
-
             Console.WriteLine(title);
-
             Prompt.PromptMenu();
         }
 
@@ -126,16 +115,12 @@ namespace loot
         //This method activates if the player finds an enemy while exploring
         public static void FindEnemy()
         {
+            Enemy enemy = new Enemy();
             Console.Clear();
             Random rand = new Random();
             int chance = rand.Next(30);
 
-            if (chance >= 0 && chance <= 10)
-                InitiateCombat("Goblin");
-            else if (chance >= 11 && chance <= 20)
-                InitiateCombat("Spider");
-            else if (chance >= 21 && chance <= 30)
-                InitiateCombat("Skeleton");
+            InitiateCombat(enemy);
         }
 
         //This method activates if the player encounters a trap.
@@ -175,8 +160,6 @@ namespace loot
                 Console.Clear();
                 FindJournal();
             }
-
-            
         }
 
         //This method activates if the player finds nothing while adventuring
@@ -188,10 +171,9 @@ namespace loot
         }
 
         //This method activated when the player fights an enemy.
-        public static void InitiateCombat(string enemy)
+        public static void InitiateCombat(Enemy enemy)
         {
-            Console.WriteLine("You start a fight with an enemy " + enemy + "!");
-            enemyHealth = 3 + player.Level;
+            Console.WriteLine("You start a fight with an enemy " + enemy.Name + "!");
 
             Random rand = new Random();
             int chance = rand.Next(50);
@@ -201,8 +183,9 @@ namespace loot
                 Console.WriteLine("Your natural speed lets you attack first.");
                 int value = 0;
                 itemDamage.TryGetValue(player.Equipped, out value);
-                Player.Hit(value);
-                Prompt.PromptBattle();
+                Console.WriteLine("You hit your enemy for " + value + " damage!");
+                enemy.Health -= value;
+                Prompt.PromptBattle(enemy);
             }
             else
             {
@@ -211,11 +194,9 @@ namespace loot
                 player.Health--;
 
                 if(player.Health <= 0)
-                {
                     Player.Die();
-                }
 
-                Prompt.PromptBattle();
+                Prompt.PromptBattle(enemy);
             }
         }
 
@@ -388,12 +369,13 @@ namespace loot
                         break;
                     //Show player stats
                     case "3":
-                        Console.WriteLine("\nExplorations lasted: " + Program.explorationsLasted +
-                                      "\nEnemies slain: " + Program.enemiesSlain +
-                                      "\nPotions drank: " + Program.potionsDrank +
-                                      "\nCrystals used: " + Program.crystalsUsed +
-                                      "\nGold obtained: " + Program.goldObtained + 
-                                      "\nPlayer level: " + Program.player.Level);
+                        Console.Clear();
+                        Console.WriteLine("Explorations lasted: " + Program.explorationsLasted +
+                                          "\nEnemies slain: " + Program.enemiesSlain +
+                                          "\nPotions drank: " + Program.potionsDrank +
+                                          "\nCrystals used: " + Program.crystalsUsed +
+                                          "\nGold obtained: " + Program.goldObtained + 
+                                          "\nPlayer level: " + Program.player.Level + "\n");
                         PromptUser();
                         break;
                     //Save the game
@@ -466,19 +448,18 @@ namespace loot
         }
 
         //This method is used when a player is in combat.
-        public static void PromptBattle()
+        public static void PromptBattle(Enemy enemy)
         {
+            
             int value = 0;
             Program.itemDamage.TryGetValue(Program.player.Equipped, out value);
 
-            if (Program.enemyHealth > 0) //Only prompt battle if enemy's HP is 0
+            if (enemy.Health > 0) //Only prompt battle if enemy's HP is 0
             {
                 if (Program.player.Health <= 0)
-                {
                     Player.Die();
-                }
 
-                Console.WriteLine("What do you do?\n" +
+                Console.WriteLine("\nWhat do you do?\n" +
                               "1) Attack enemy\n" +
                               "2) Run Away\n");
                 string choice = Console.ReadLine();
@@ -491,23 +472,24 @@ namespace loot
 
                     if (chance > 10)
                     {
-                        Player.Hit(value + Program.player.Level);
+                        Console.WriteLine("You hit your enemy for " + (value + Program.player.Level) + " damage\n");
+                        enemy.Health -= (value + Program.player.Level);
 
                         chance = rand.Next(100);
 
-                        if (Program.enemyHealth <= 0)
-                        {
+                        if (enemy.Health <= 0)
                             Enemy.Die();
-                        }
 
-                        if (chance > 70) //30% chance to get hit by the enemy
+                        if (chance > 70)
                         {
-                            Enemy.Hit();
+                            Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
+                            Program.player.Health--;
+                            PromptBattle(enemy);
                         }
                         else
                         {
-                            Console.WriteLine("You evade the enemy's attack.\n");
-                            PromptBattle();
+                            Console.WriteLine("You evade the enemy's attack.");
+                            PromptBattle(enemy);
                         }
                     }
                     else
@@ -518,12 +500,14 @@ namespace loot
 
                         if (chance > 70)
                         {
-                            Enemy.Hit();
+                            Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
+                            Program.player.Health--;
+                            PromptBattle(enemy);
                         }
                         else
                         {
-                            Console.WriteLine("You evade the enemy's attack.\n");
-                            PromptBattle();
+                            Console.WriteLine("You evade the enemy's attack.");
+                            PromptBattle(enemy);
                         }
                     }
                 }
@@ -536,12 +520,14 @@ namespace loot
                     if (chance > 50)
                     {
                         Console.WriteLine("You successfully run away.\n");
-                        Prompt.PromptUser();
+                        PromptUser();
                     }
                     else
                     {
                         Console.WriteLine("You failed to escape!");
-                        Enemy.Hit();
+                        Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.\n");
+                        Program.player.Health--;
+                        PromptBattle(enemy);
                     }
                 }
             }

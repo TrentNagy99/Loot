@@ -1,13 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace loot
 {
     class Enemy
     {
+        private int damage;
+        private int health;
+        private string name;
+
+        public Enemy()
+        {
+            Damage = 1 + (Program.player.Level + Program.player.Level);
+            Health = 2 + (Program.player.Level + Program.player.Level);
+            Name = "Skeleton";
+        }
+
         public static void Die()
         {
             Console.WriteLine("The enemy is defeated!\n");
@@ -17,11 +24,8 @@ namespace loot
             Prompt.PromptUser();
         }
 
-        public static void Hit()
-        {
-            Console.WriteLine("The enemy hits you for 1 damage.\n");
-            Program.player.Health--;
-            Prompt.PromptBattle();
-        }
+        public int Health { get; set; }
+        public int Damage { get; set; }
+        public string Name { get; set; }
     }
 }
