@@ -170,6 +170,17 @@ namespace loot
             Prompt.PromptUser();
         }
 
+        public static void FindMerchant()
+        {
+            Console.Clear();
+            Console.WriteLine("Well, you found me. Congratulations. Was it worth it?\n" +
+                              "Because despite your violent behavior, the only thing you managed\n" +
+                              "to break so far was my heart. Maybe you could settle for that and\n" +
+                              "we'll just call it a day. I guess we both know that isn't going to happen.\n" +
+                              "You chose this path, and now I have a surprise for you.\n");
+            Prompt.PromptMerchant();
+        }
+
         //This method activated when the player fights an enemy.
         public static void InitiateCombat(Enemy enemy)
         {
@@ -362,6 +373,8 @@ namespace loot
                             Program.FindTrap();
                         else if (chance == 51)
                             Program.FindJournal();
+                        else if (chance == 52)
+                            Program.FindMerchant();
                         else
                             Program.FindNothing();
 
@@ -436,6 +449,7 @@ namespace loot
                         break;
                     //Unknown
                     default:
+                        Console.Clear();
                         Console.WriteLine("You don't think \"" + input + "\" is a viable option.\n");
                         PromptUser();
                         break;
@@ -938,5 +952,9 @@ namespace loot
             }
         }
 
+        public static void PromptMerchant()
+        {
+            PromptUser();
+        }
     }
 }
