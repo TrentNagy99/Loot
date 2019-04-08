@@ -37,7 +37,7 @@ namespace loot
         public static List<string> alchemistBuyableItems = new List<string> { "potion", "health crystal" };
 
         public static Player player = new Player();
-
+        public static int currentDepth = 0;
         public static int nextMilestone = levels[player.Level + 1];
 
         //----Stats----
@@ -361,7 +361,7 @@ namespace loot
                     case "2":
                         Console.WriteLine("\nYou explore the dungeon further.\n");
                         Program.explorationsLasted++;
-
+                        Program.currentDepth++;
                         Random rand = new Random();
                         int chance = rand.Next(100);
 
@@ -440,7 +440,43 @@ namespace loot
                         break;
                     //Return to menu
                     case "5":
+                        double calculateHealth(double health, double maxHealth)
+                        {
+                            double calculated = (health / maxHealth)*100;
+                            return calculated;
+                        }
                         Console.Clear();
+                        Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
+                                          "Based on your health, you have a " + calculateHealth(Program.player.Health, Program.player.MaxHealth) + "% chance to survive.\n");
+                        Console.WriteLine("Will you leave? (y/n)");
+
+
+                        string choice = Console.ReadLine();
+                        if(choice.ToLower() == "y")
+                        {
+                            Random random = new Random();
+                            int escapeChance = random.Next(100);
+                            if(escapeChance <= calculateHealth(Program.player.Health, Program.player.MaxHealth))
+                            {
+                                Program.currentDepth = 0;
+                                Console.Clear();
+                                PromptTown();
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Player.Die();
+                            }
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            PromptUser();
+                        }
+
+                        Program.currentDepth = 0;
+                        Console.Clear();
+
                         PromptTown();
                         break;
                     case "6":
