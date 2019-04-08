@@ -533,7 +533,7 @@ namespace loot
                         if (chance > 70)
                         {
                             Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
-                            Program.player.Health--;
+                            Program.player.Health -= enemy.Damage;
                             PromptBattle(enemy);
                         }
                         else
@@ -551,7 +551,7 @@ namespace loot
                         if (chance > 70)
                         {
                             Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
-                            Program.player.Health--;
+                            Program.player.Health -= enemy.Damage;
                             PromptBattle(enemy);
                         }
                         else
@@ -576,7 +576,7 @@ namespace loot
                     {
                         Console.WriteLine("You failed to escape!");
                         Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.\n");
-                        Program.player.Health--;
+                        Program.player.Health -= enemy.Damage;
                         PromptBattle(enemy);
                     }
                 }
