@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -82,6 +81,11 @@ namespace loot
 
             Console.WriteLine(title);
             Prompt.PromptMenu();
+        }
+
+        public static void GenerateCharacter()
+        {
+
         }
 
         //This method activates if the player finds a chest while exploring
@@ -371,10 +375,6 @@ namespace loot
                             Program.FindEnemy();
                         else if (chance >= 45 && chance <= 50)
                             Program.FindTrap();
-                        else if (chance == 51)
-                            Program.FindJournal();
-                        else if (chance == 52)
-                            Program.FindMerchant();
                         else
                             Program.FindNothing();
 
@@ -445,39 +445,98 @@ namespace loot
                             double calculated = (health / maxHealth)*100;
                             return calculated;
                         }
+                        double healthPercentage = calculateHealth(Program.player.Health, Program.player.MaxHealth);
                         Console.Clear();
-                        Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
-                                          "Based on your health, you have a " + calculateHealth(Program.player.Health, Program.player.MaxHealth) + "% chance to survive.\n");
-                        Console.WriteLine("Will you leave? (y/n)");
 
-
-                        string choice = Console.ReadLine();
-                        if(choice.ToLower() == "y")
+                        if(healthPercentage > 69 && Program.currentDepth < 360)
                         {
-                            Random random = new Random();
-                            int escapeChance = random.Next(100);
-                            if(escapeChance <= calculateHealth(Program.player.Health, Program.player.MaxHealth))
+                            Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
+                                          "Based on your health, you will survive the journey back.\n");
+
+                            Console.WriteLine("Will you leave? (y/n)");
+
+                            string choice = Console.ReadLine();
+
+                            if (choice.ToLower() == "y")
                             {
                                 Program.currentDepth = 0;
-                                Console.Clear();
                                 PromptTown();
                             }
                             else
                             {
-                                Console.Clear();
-                                Player.Die();
+                                PromptUser();
                             }
                         }
-                        else
+                        else if(healthPercentage > 69 || Program.currentDepth > 360)
                         {
-                            Console.Clear();
-                            PromptUser();
+                            Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
+                                          "Based on your depth, you may starve to death.\n");
+
+                            Console.WriteLine("Will you leave? (y/n)");
+
+                            string choice = Console.ReadLine();
+
+                            if (choice.ToLower() == "y")
+                            {
+                                //Change this
+                                Program.currentDepth = 0;
+                                PromptTown();
+                            }
+                            else
+                            {
+                                PromptUser();
+                            }
                         }
+                        else if (healthPercentage <= 69 && Program.currentDepth <= 10)
+                        {
+                            Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
+                                          "You are wounded, but the exit is close by.\n");
 
-                        Program.currentDepth = 0;
-                        Console.Clear();
+                            Console.WriteLine("Will you leave? (y/n)");
 
-                        PromptTown();
+                            string choice = Console.ReadLine();
+
+                            if (choice.ToLower() == "y")
+                            {
+                                Program.currentDepth = 0;
+                                PromptTown();
+                            }
+                            else
+                            {
+                                PromptUser();
+                            }
+                        }
+                        else if(healthPercentage <= 69)
+                        {
+                            Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
+                                          "Based on your health, you have a " + healthPercentage + "% chance to survive.\n");
+
+                            Console.WriteLine("Will you leave? (y/n)");
+
+                            string choice = Console.ReadLine();
+
+                            if (choice.ToLower() == "y")
+                            {
+                                Random random = new Random();
+                                int chance2 = random.Next(100);
+
+                                if(chance2 > healthPercentage)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("Unfortunately, you have succumbed to your wounds.");
+                                    Player.Die();
+                                }
+                                else
+                                {
+                                    Program.currentDepth = 0;
+                                    PromptTown();
+                                }
+                            }
+                            else
+                            {
+                                PromptUser();
+                            }
+                        }
                         break;
                     case "6":
                         Console.Clear();
@@ -602,11 +661,14 @@ namespace loot
                 case "new game":
                 case "new":
                     Console.Clear();
-                    Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
-                    "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
-                    "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
+                    //Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
+                    //"\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
+                    //"\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
 
-                    PromptUser();
+                    //PromptUser();
+                    
+
+                    GenerateCharacter();
                     break;
                 //Exit game
                 case "exit":
@@ -667,6 +729,29 @@ namespace loot
                     PromptMenu();
                     break;
             }
+        }
+
+        private static void GenerateCharacter()
+        {
+            string occupation;
+            string luck;
+            string town;
+            string reason;
+            string discover;
+
+            Random rand = new Random();
+
+            occupation = Generation.occupation[rand.Next(Generation.occupation.Count)];
+            luck = Generation.luck[rand.Next(Generation.luck.Count)];
+            town = Generation.town[rand.Next(Generation.town.Count)];
+            reason = Generation.reason[rand.Next(Generation.reason.Count)];
+            discover = Generation.discover[rand.Next(Generation.discover.Count)];
+
+            Console.WriteLine("You are a " + occupation + " with " + luck + " luck.");
+            Console.WriteLine("Your hometown is " + town + ", but you moved to Easthallow " + reason + ".\n");
+            Console.WriteLine("While walking around, you happen upon" + discover + ".");
+
+            PromptTown();
         }
 
         //Prompt the user for what shop they want (unfinished)

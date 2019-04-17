@@ -32,7 +32,9 @@ namespace loot
 
         public static void Die()
         {
-            Console.WriteLine("Your days of adventuring are cut short as you collapse to the floor.\n\n");
+            Console.WriteLine("Your days of adventuring are cut short as you collapse to the floor.");
+            if(Program.currentDepth <= 10)
+                Console.WriteLine("And at the very beginning of the exploration, too.\n\n");
             Console.WriteLine("Press enter to continue.");
             Console.Read();
             Program.MainMenu();
