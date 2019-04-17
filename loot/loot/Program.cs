@@ -745,11 +745,11 @@ namespace loot
             luck = Generation.luck[rand.Next(Generation.luck.Count)];
             town = Generation.town[rand.Next(Generation.town.Count)];
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
-            discover = Generation.discover[rand.Next(Generation.discover.Count)];
+            //discover = Generation.discover[rand.Next(Generation.discover.Count)];
 
             Console.WriteLine("You are a " + occupation + " with " + luck + " luck.");
             Console.WriteLine("Your hometown is " + town + ", but you moved to Easthallow " + reason + ".\n");
-            Console.WriteLine("While walking around, you happen upon" + discover + ".");
+            //Console.WriteLine("While walking around, you happen upon" + discover + ".");
 
             PromptTown();
         }
