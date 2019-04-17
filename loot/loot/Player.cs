@@ -16,6 +16,7 @@ namespace loot
             Level = 1;
             Experience = 0;
             Equipped = "sword";
+            Hometown = "";
         }
 
         public int Health { get; set; }
@@ -29,6 +30,8 @@ namespace loot
         public int Experience { get; set; }
 
         public string Equipped { get; set; }
+
+        public string Hometown { get; set; }
 
         public static void Die()
         {

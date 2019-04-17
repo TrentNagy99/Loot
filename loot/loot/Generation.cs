@@ -20,7 +20,7 @@ namespace loot
 
         public static List<string> town = new List<string>
         {
-            "Colonia", "Hemsworth", "Alverton", "Garthram", "Hampstead", "Rivermuth", "Soalria"
+            "Colonia", "Hemsworth", "Alverton", "Garthram", "Hampstead", "Rivermuth", "Solaria"
         };
 
         public static List<string> reason = new List<string>

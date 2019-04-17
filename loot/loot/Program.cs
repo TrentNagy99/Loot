@@ -83,11 +83,6 @@ namespace loot
             Prompt.PromptMenu();
         }
 
-        public static void GenerateCharacter()
-        {
-
-        }
-
         //This method activates if the player finds a chest while exploring
         public static void FindChest()
         {
@@ -135,54 +130,12 @@ namespace loot
             player.Health -= 2;
         }
 
-        //This method activates if the player finds a page of a journal
-        public static void FindJournal()
-        {
-            Console.Clear();
-            Console.WriteLine("You found a journal. Would you like to read it? (y/n)");
-
-            string choice = Console.ReadLine();
-
-            if(choice.ToLower() == "y")
-            {
-                Journal journal = new Journal();
-                Random rand = new Random();
-                int chance = rand.Next(Journal.entries.Count);
-
-                Console.Clear();
-                Console.WriteLine(Journal.entries[chance]);
-                Prompt.PromptUser();
-            }
-            else if(choice.ToLower() == "n")
-            {
-                Console.Clear();
-                Console.WriteLine("You decide not to read it.\n");
-                Prompt.PromptUser();
-            }
-            else
-            {
-                Console.Clear();
-                FindJournal();
-            }
-        }
-
         //This method activates if the player finds nothing while adventuring
         public static void FindNothing()
         {
             Console.Clear();
             Console.WriteLine("You delve further into the dungeon.\n");
             Prompt.PromptUser();
-        }
-
-        public static void FindMerchant()
-        {
-            Console.Clear();
-            Console.WriteLine("Well, you found me. Congratulations. Was it worth it?\n" +
-                              "Because despite your violent behavior, the only thing you managed\n" +
-                              "to break so far was my heart. Maybe you could settle for that and\n" +
-                              "we'll just call it a day. I guess we both know that isn't going to happen.\n" +
-                              "You chose this path, and now I have a surprise for you.\n");
-            Prompt.PromptMerchant();
         }
 
         //This method activated when the player fights an enemy.
@@ -274,8 +227,9 @@ namespace loot
                 Console.WriteLine("1) View Inventory\n" +
                                   "2) Explore\n" +
                                   "3) View Stats\n" +
-                                  "4) Save\n" +
-                                  "5) Leave Dungeon\n");
+                                  "4) Leave Dungeon\n" +
+                                  "5) Save\n" + 
+                                  "6) Exit\n");
                 string input = Console.ReadLine();
 
                 //Show the inventory, and ask player  if they want to use an item.
@@ -383,6 +337,7 @@ namespace loot
                     //Show player stats
                     case "3":
                         Console.Clear();
+                        Console.WriteLine("Your hometown is " + Program.player.Hometown + "\n");
                         Console.WriteLine("Explorations lasted: " + Program.explorationsLasted +
                                           "\nEnemies slain: " + Program.enemiesSlain +
                                           "\nPotions drank: " + Program.potionsDrank +
@@ -391,64 +346,16 @@ namespace loot
                                           "\nPlayer level: " + Program.player.Level + "\n");
                         PromptUser();
                         break;
-                    //Save the game
                     case "4":
-                        try
-                        {
-                            //First, clear the console.
-                            Console.Clear();
-                            //Then, tell the player the game is trying to save
-                            Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
-
-                            //Create a BinaryWriter
-                            BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
-
-                            //Write the stats
-                            writer.Write(Program.explorationsLasted);
-                            writer.Write(Program.enemiesSlain);
-                            writer.Write(Program.goldObtained);
-                            writer.Write(Program.potionsDrank);
-                            writer.Write(Program.crystalsUsed);
-
-                            //Write player information
-                            writer.Write(Program.player.MaxHealth);
-                            writer.Write(Program.player.Health);
-                            writer.Write(Program.player.Gold);
-                            writer.Write(Program.player.Equipped);
-                            writer.Write(Program.player.Level);
-
-                            //Write player inventory
-                            foreach (string item in Program.playerInventory)
-                            {
-                                writer.Write(Program.Crypt(item));
-                            }
-
-                            //Tell the user it succeeded.
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("Game saved successfully!\n");
-                            Console.ResetColor();
-
-                            //Close the writer, prompt the user.
-                            writer.Close();
-                            PromptUser();
-                        }
-                        catch (IOException ex)
-                        {
-                            Console.WriteLine(ex.Message + "\n Cannot create file.");
-                            Console.Read();
-                        }
-                        break;
-                    //Return to menu
-                    case "5":
                         double calculateHealth(double health, double maxHealth)
                         {
-                            double calculated = (health / maxHealth)*100;
+                            double calculated = (health / maxHealth) * 100;
                             return calculated;
                         }
                         double healthPercentage = calculateHealth(Program.player.Health, Program.player.MaxHealth);
                         Console.Clear();
 
-                        if(healthPercentage > 69 && Program.currentDepth < 360)
+                        if (healthPercentage > 69 && Program.currentDepth < 360)
                         {
                             Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
                                           "Based on your health, you will survive the journey back.\n");
@@ -467,7 +374,7 @@ namespace loot
                                 PromptUser();
                             }
                         }
-                        else if(healthPercentage > 69 || Program.currentDepth > 360)
+                        else if (healthPercentage > 69 || Program.currentDepth > 360)
                         {
                             Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
                                           "Based on your depth, you may starve to death.\n");
@@ -506,7 +413,7 @@ namespace loot
                                 PromptUser();
                             }
                         }
-                        else if(healthPercentage <= 69)
+                        else if (healthPercentage <= 69)
                         {
                             Console.WriteLine("You are " + Program.currentDepth + " minutes away from the exit.\n" +
                                           "Based on your health, you have a " + healthPercentage + "% chance to survive.\n");
@@ -520,7 +427,7 @@ namespace loot
                                 Random random = new Random();
                                 int chance2 = random.Next(100);
 
-                                if(chance2 > healthPercentage)
+                                if (chance2 > healthPercentage)
                                 {
                                     Console.Clear();
                                     Console.WriteLine("Unfortunately, you have succumbed to your wounds.");
@@ -538,9 +445,59 @@ namespace loot
                             }
                         }
                         break;
+                    //Save the game
+                    case "5":
+                        try
+                        {
+                            //First, clear the console.
+                            Console.Clear();
+                            //Then, tell the player the game is trying to save
+                            Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
+
+                            //Create a BinaryWriter
+                            BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
+
+                            //Write the stats
+                            writer.Write(Program.explorationsLasted);
+                            writer.Write(Program.enemiesSlain);
+                            writer.Write(Program.goldObtained);
+                            writer.Write(Program.potionsDrank);
+                            writer.Write(Program.crystalsUsed);
+
+                            //Write player information
+                            writer.Write(Program.player.MaxHealth);
+                            writer.Write(Program.player.Health);
+                            writer.Write(Program.player.Gold);
+                            writer.Write(Program.player.Equipped);
+                            writer.Write(Program.player.Level);
+
+                            //Background
+                            writer.Write(Program.player.Hometown);
+
+                            //Write player inventory
+                            foreach (string item in Program.playerInventory)
+                            {
+                                writer.Write(Program.Crypt(item));
+                            }
+
+                            //Tell the user it succeeded.
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Game saved successfully!\n");
+                            Console.ResetColor();
+
+                            //Close the writer, prompt the user.
+                            writer.Close();
+                            PromptUser();
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine(ex.Message + "\n Cannot create file.");
+                            Console.Read();
+                        }
+                        break;
+                    //Return to menu
                     case "6":
-                        Console.Clear();
-                        Program.FindJournal();
+                        Program.MainMenu();
                         break;
                     //Unknown
                     default:
@@ -694,6 +651,9 @@ namespace loot
                         Program.player.Equipped = reader.ReadString();
                         Program.player.Level = reader.ReadInt32();
 
+                        //Background
+                        Program.player.Hometown = reader.ReadString();
+
                         //Read player inventory
                         while (reader.BaseStream.Position != reader.BaseStream.Length)
                         {
@@ -744,6 +704,7 @@ namespace loot
             occupation = Generation.occupation[rand.Next(Generation.occupation.Count)];
             luck = Generation.luck[rand.Next(Generation.luck.Count)];
             town = Generation.town[rand.Next(Generation.town.Count)];
+            Program.player.Hometown = town;
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
             //discover = Generation.discover[rand.Next(Generation.discover.Count)];
 
@@ -1071,11 +1032,6 @@ namespace loot
                     PromptAlchemist();
                     break;
             }
-        }
-
-        public static void PromptMerchant()
-        {
-            PromptUser();
         }
     }
 }

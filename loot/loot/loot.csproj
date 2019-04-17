@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Enemy.cs" />
     <Compile Include="Generation.cs" />
-    <Compile Include="Journal.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
