@@ -10,17 +10,32 @@ namespace loot
     {
         public static List<string> occupation = new List<string>
         {
-            "beggar", "nobleman", "laborer", "pit fighter", "knight"
-        };
-
-        public static List<string> luck = new List<string>
-        {
-            "great", "good", "average", "bad", "terrible"
+            "beggar", "nobleman", "laborer", "ring fighter", "knight"
         };
 
         public static List<string> town = new List<string>
         {
             "Colonia", "Hemsworth", "Alverton", "Garthram", "Hampstead", "Rivermuth", "Solaria"
+        };
+
+        public static List<string> fNameMale = new List<string>
+        {
+            "Reinald", "Barry", "Nathaniel", "Ermin", "Solomon", "Gilram", "Thelnur", "Doldrak"
+        };
+
+        public static List<string> lNameMale = new List<string>
+        {
+            "Kharmus", "Thalmiir", "Thelren", "Amasu", "Mormar", "Galmiir", "Murdrom"
+        };
+
+        public static List<string> fNameFemale = new List<string>
+        {
+            "Tislen", "Reynwin", "Daeleth", "Erana", "Zyleth", "Cairel", "Aeroph", "Mei"
+        };
+
+        public static List<string> lNameFemale = new List<string>
+        {
+            "Amasu", "Vallynn", "Olathana", "Reywell", "Mormar", "Kharmus"
         };
 
         public static List<string> reason = new List<string>
