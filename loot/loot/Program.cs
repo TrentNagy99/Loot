@@ -766,7 +766,7 @@ namespace loot
             PromptTown();
         }
 
-        //Prompt the user for what shop they want (unfinished)
+        //Prompt the user for what shop they want 
         public static void PromptTown()
         {
             Console.WriteLine("The town is full of people going in and out of shops.\n");
@@ -801,7 +801,7 @@ namespace loot
             }
         }
 
-        //Prompt the user what they want to do in the blacksmith (unfinished)
+        //Prompt the user what they want to do in the blacksmith 
         public static void PromptBlacksmith()
         {
             Console.WriteLine("Swords of all shapes and sizes line the walls of the blacksmith.\n");
@@ -970,7 +970,7 @@ namespace loot
             }
         }
 
-        //Prompt the user what they want to do in the alchemist's shop (unfinished)
+        //Prompt the user what they want to do in the alchemist's shop 
         public static void PromptAlchemist()
         {
             
