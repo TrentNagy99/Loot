@@ -224,20 +224,21 @@ namespace loot
             if (Program.player.Health >= 1)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("1) View Inventory\n" +
-                                  "2) Explore\n" +
-                                  "3) View Stats\n" +
-                                  "4) Leave Dungeon\n" +
-                                  "5) Save\n" + 
-                                  "6) Exit\n");
-                Console.ForegroundColor = ConsoleColor.White;
-                string input = Console.ReadLine();
+                Console.WriteLine("i: View Inventory\n" +
+                                  "p: Explore\n" +
+                                  "a: View Stats\n" +
+                                  "l: Leave Dungeon\n" +
+                                  "s: Save\n" + 
+                                  "e: Exit\n");
+                Console.ResetColor();;
+                ConsoleKeyInfo input = Console.ReadKey();
 
                 //Show the inventory, and ask player  if they want to use an item.
-                switch (input)
+                switch (input.KeyChar.ToString().ToLower())
                 {
                     //Show the player's inventory, ask if they want to use an item
                     case "1":
+                    case "i":
                         // Catch an exception if there's a problem with printing out the inventory list.
                         try
                         {
@@ -251,7 +252,7 @@ namespace loot
                                 Console.WriteLine(Program.playerInventory[i]);
 
                             Console.WriteLine("-------------------\n");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
                         }
                         catch (Exception ex)
                         {
@@ -262,14 +263,14 @@ namespace loot
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         
                         Console.WriteLine("Use item? (y/n)");
-                        string useItemYorN = Console.ReadLine();
-                        Console.ForegroundColor = ConsoleColor.White;
+                        ConsoleKeyInfo useItemYorN = Console.ReadKey();
+                        Console.ResetColor();;
 
-                        if (useItemYorN.ToLower() == "y")
+                        if (useItemYorN.KeyChar.ToString().ToLower() == "y")
                         {
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("\nWhich one? (use the item name)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
                             string itemChoice = Console.ReadLine();
                             Console.Clear();
@@ -316,16 +317,22 @@ namespace loot
                                 break;
                             }
                         }
-                        else if (useItemYorN.ToLower() == "n")
+                        else if (useItemYorN.KeyChar.ToString().ToLower() == "n")
                         {
                             Console.Clear();
                             Console.WriteLine("You decide not to use anything.\n");
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            PromptUser();
                         }
 
                         PromptUser();
                         break;
                     //Explore the dungeon
                     case "2":
+                    case "p":
                         Console.WriteLine("\nYou explore the dungeon further.\n");
                         Program.explorationsLasted++;
                         Program.currentDepth++;
@@ -345,6 +352,7 @@ namespace loot
                         break;
                     //Show player stats
                     case "3":
+                    case "a":
                         Console.Clear();
                         Console.WriteLine("You are " + Program.player.FirstName + " " + Program.player.LastName);
                         Console.WriteLine("Your hometown is " + Program.player.Hometown + "\n");
@@ -357,6 +365,7 @@ namespace loot
                         PromptUser();
                         break;
                     case "4":
+                    case "l":
                         double calculateHealth(double health, double maxHealth)
                         {
                             double calculated = (health / maxHealth) * 100;
@@ -372,11 +381,11 @@ namespace loot
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Will you leave? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
-                            string choice = Console.ReadLine();
+                            ConsoleKeyInfo key = Console.ReadKey();
 
-                            if (choice.ToLower() == "y")
+                            if (key.KeyChar.ToString().ToLower() == "y")
                             {
                                 Program.currentDepth = 0;
                                 Console.Clear();
@@ -394,11 +403,11 @@ namespace loot
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Will you leave? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
-                            string choice = Console.ReadLine();
+                            ConsoleKeyInfo key = Console.ReadKey();
 
-                            if (choice.ToLower() == "y")
+                            if (key.KeyChar.ToString().ToLower() == "y")
                             {
                                 //Change this
                                 Console.Clear();
@@ -417,11 +426,11 @@ namespace loot
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Will you leave? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
-                            string choice = Console.ReadLine();
+                            ConsoleKeyInfo key = Console.ReadKey();
 
-                            if (choice.ToLower() == "y")
+                            if (key.KeyChar.ToString().ToLower() == "y")
                             {
                                 Console.Clear();
                                 Program.currentDepth = 0;
@@ -439,11 +448,11 @@ namespace loot
 
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Will you leave? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
-                            string choice = Console.ReadLine();
+                            ConsoleKeyInfo key = Console.ReadKey();
 
-                            if (choice.ToLower() == "y")
+                            if (key.KeyChar.ToString().ToLower() == "y")
                             {
                                 Random random = new Random();
                                 int chance2 = random.Next(100);
@@ -469,65 +478,32 @@ namespace loot
                         break;
                     //Save the game
                     case "5":
-                        try
-                        {
-                            //First, clear the console.
-                            Console.Clear();
-                            //Then, tell the player the game is trying to save
-                            Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
-
-                            //Create a BinaryWriter
-                            BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
-
-                            //Write the stats
-                            writer.Write(Program.explorationsLasted);
-                            writer.Write(Program.enemiesSlain);
-                            writer.Write(Program.goldObtained);
-                            writer.Write(Program.potionsDrank);
-                            writer.Write(Program.crystalsUsed);
-                            writer.Write(Program.currentDepth);
-
-                            //Write player information
-                            writer.Write(Program.player.MaxHealth);
-                            writer.Write(Program.player.Health);
-                            writer.Write(Program.player.Gold);
-                            writer.Write(Program.player.Equipped);
-                            writer.Write(Program.player.Level);
-
-                            //Background
-                            writer.Write(Program.player.Hometown);
-                            writer.Write(Program.player.FirstName);
-                            writer.Write(Program.player.LastName);
-
-                            //Write player inventory
-                            foreach (string item in Program.playerInventory)
-                            {
-                                writer.Write(Program.Crypt(item));
-                            }
-
-                            //Tell the user it succeeded.
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("Game saved successfully!\n");
-                            Console.ResetColor();
-
-                            //Close the writer, prompt the user.
-                            writer.Close();
-                            PromptUser();
-                        }
-                        catch (IOException ex)
-                        {
-                            Console.WriteLine(ex.Message + "\n Cannot create file.");
-                            Console.Read();
-                        }
+                    case "s":
+                        Save();
                         break;
                     //Return to menu
                     case "6":
+                    case "e":
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("Do you wish to save first before exiting? (y/n)");
+                        Console.ResetColor();;
+
+                        ConsoleKeyInfo choice = Console.ReadKey();
+
+                        if (choice.KeyChar.ToString().ToLower() == "y")
+                        {
+                            Save();
+                            Program.MainMenu();
+                        }
+                        else
+                        {
+                            PromptUser();
+                        }
                         Program.MainMenu();
                         break;
                     //Unknown
                     default:
                         Console.Clear();
-                        Console.WriteLine("You don't think \"" + input + "\" is a viable option.\n");
                         PromptUser();
                         break;
                 }
@@ -552,13 +528,13 @@ namespace loot
 
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("\nWhat do you do?\n" +
-                              "1) Attack enemy\n" +
-                              "2) Run Away\n");
-                Console.ForegroundColor = ConsoleColor.White;
+                                  "a: Attack enemy\n" +
+                                  "r: Run Away\n");
+                Console.ResetColor();;
 
-                string choice = Console.ReadLine();
+                ConsoleKeyInfo choice = Console.ReadKey();
 
-                if (choice == "1")
+                if (choice.KeyChar.ToString().ToLower() == "a")
                 {
                     Console.Clear();
                     Random rand = new Random();
@@ -605,7 +581,7 @@ namespace loot
                         }
                     }
                 }
-                else
+                else if (choice.KeyChar.ToString().ToLower() == "r")
                 {
                     Console.Clear();
                     Random rand = new Random();
@@ -624,6 +600,10 @@ namespace loot
                         PromptBattle(enemy);
                     }
                 }
+                else
+                {
+                    PromptBattle(enemy);
+                }
             }
             else //If the enemy has 0 health upon prompting battle
             {
@@ -634,27 +614,23 @@ namespace loot
         //Handles menu selection
         public static void PromptMenu()
         {
-            Console.WriteLine("(N)ew Game");
-            Console.WriteLine("(C)ontinue");
-            Console.WriteLine("(E)xit\n");
+            Console.WriteLine("n: New Game");
+            Console.WriteLine("c: Continue");
+            Console.WriteLine("e: Exit\n");
 
-            string menuChoice = Console.ReadLine();
+            ConsoleKeyInfo menuChoice = Console.ReadKey();
 
-            switch (menuChoice.ToLower())
+            switch (menuChoice.KeyChar.ToString().ToLower())
             {
                 //New Game
-                case "new game":
-                case "new":
                 case "n":
                     Console.Clear();
                     GenerateCharacter();
                     break;
                 //Exit game
-                case "exit":
                 case "e":
                     Environment.Exit(0);
                     break;
-                case "continue":
                 case "c":
                     try
                     {
@@ -766,36 +742,90 @@ namespace loot
             PromptTown();
         }
 
+        private static void Save()
+        {
+            try
+            {
+                //First, clear the console.
+                Console.Clear();
+                //Then, tell the player the game is trying to save
+                Console.WriteLine("You scribble down your adventure so far onto a piece of parchment...");
+
+                //Create a BinaryWriter
+                BinaryWriter writer = new BinaryWriter(new FileStream("savestate", FileMode.Create));
+
+                //Write the stats
+                writer.Write(Program.explorationsLasted);
+                writer.Write(Program.enemiesSlain);
+                writer.Write(Program.goldObtained);
+                writer.Write(Program.potionsDrank);
+                writer.Write(Program.crystalsUsed);
+                writer.Write(Program.currentDepth);
+
+                //Write player information
+                writer.Write(Program.player.MaxHealth);
+                writer.Write(Program.player.Health);
+                writer.Write(Program.player.Gold);
+                writer.Write(Program.player.Equipped);
+                writer.Write(Program.player.Level);
+
+                //Background
+                writer.Write(Program.player.Hometown);
+                writer.Write(Program.player.FirstName);
+                writer.Write(Program.player.LastName);
+
+                //Write player inventory
+                foreach (string item in Program.playerInventory)
+                {
+                    writer.Write(Program.Crypt(item));
+                }
+
+                //Tell the user it succeeded.
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Game saved successfully!\n");
+                Console.ResetColor();
+
+                //Close the writer, prompt the user.
+                writer.Close();
+                Console.WriteLine("\n\nPress enter to contine.");
+                Console.Read();
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message + "\n Cannot create file.");
+                Console.Read();
+            }
+        }
+
         //Prompt the user for what shop they want 
         public static void PromptTown()
         {
             Console.WriteLine("The town is full of people going in and out of shops.\n");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("1) Blacksmith\n" +
-                              "2) Alchemist Shop\n" +
-                              "3) Enter The Dungeon");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("b: Blacksmith\n" +
+                              "a: Alchemist Shop\n" +
+                              "e: Enter The Dungeon");
+            Console.ResetColor();;
 
-            string choice = Console.ReadLine();
+            ConsoleKeyInfo choice = Console.ReadKey();
 
-            switch (choice)
+            switch (choice.KeyChar.ToString().ToLower())
             {
-                case "1":
+                case "b":
                     Console.Clear();
                     PromptBlacksmith();
                     break;
-                case "2":
+                case "a":
                     Console.Clear();
                     PromptAlchemist();
                     break;
-                case "3":
+                case "e":
                     Console.Clear();
                     Console.WriteLine("You arrive back at The Dungeon.\n");
                     PromptUser();
                     break;
                 default:
                     Console.Clear();
-                    Console.WriteLine("You cannot find that here.\n");
                     PromptTown();
                     break;
             }
@@ -810,11 +840,11 @@ namespace loot
             Console.WriteLine("1) Buy item\n" +
                               "2) Sell item\n" +
                               "3) Leave shop\n");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ResetColor();;
 
-            string choice = Console.ReadLine();
+            ConsoleKeyInfo choice = Console.ReadKey();
 
-            switch (choice.ToLower())
+            switch (choice.KeyChar.ToString().ToLower())
             {
                 case "1":
                     Console.Clear();
@@ -825,24 +855,24 @@ namespace loot
                     for (int i = 0; i < Program.blacksmithInventory.Count; i++)
                         Console.WriteLine(Program.blacksmithInventory[i]);
                     Console.WriteLine("-------------------\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("\"So, what will you buy?\"");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
-                    choice = Console.ReadLine();
+                    string itemName = Console.ReadLine();
 
-                    if (Program.blacksmithInventory.Contains(choice))
+                    if (Program.blacksmithInventory.Contains(itemName))
                     {
                         int value = 0;
-                        Program.allItems.TryGetValue(choice, out value);
+                        Program.allItems.TryGetValue(itemName, out value);
                         Console.Clear();
-                        Console.WriteLine("\"Hmm, you know what? I'll charge you " + value + " for my " + choice + "\"");
+                        Console.WriteLine("\"Hmm, you know what? I'll charge you " + value + " for my " + itemName + "\"");
 
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("\nDo you accept? (y/n)");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ResetColor();;
 
                         string input = Console.ReadLine();
 
@@ -858,9 +888,9 @@ namespace loot
                             {
                                 Console.Clear();
                                 Console.WriteLine("\"It's a done deal, then.\"\n");
-                                Program.playerInventory.Add(choice);
-                                Program.player.Gold -= Program.allItems[choice];
-                                Program.blacksmithInventory.Remove(choice);
+                                Program.playerInventory.Add(itemName);
+                                Program.player.Gold -= Program.allItems[itemName];
+                                Program.blacksmithInventory.Remove(itemName);
                                 PromptBlacksmith();
                             }
                         }
@@ -894,18 +924,18 @@ namespace loot
                     for (int i = 0; i < Program.playerInventory.Count; i++)
                         Console.WriteLine(Program.playerInventory[i]);
                     Console.WriteLine("-------------------\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("What do you want to sell? (use item name)\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
-                    choice = Console.ReadLine();
+                    itemName = Console.ReadLine();
 
-                    if (Program.playerInventory.Contains(choice))
+                    if (Program.playerInventory.Contains(itemName))
                     {
                         Console.Clear();
-                        if (!Program.blacksmithBuyableItems.Contains(choice))
+                        if (!Program.blacksmithBuyableItems.Contains(itemName))
                         {
                             Console.WriteLine("\"I don't buy that kind of item.\"\n");
                             Console.Read();
@@ -914,12 +944,12 @@ namespace loot
                         else
                         {
                             int value = 0;
-                            Program.allItems.TryGetValue(choice, out value);
+                            Program.allItems.TryGetValue(itemName, out value);
 
                             Console.WriteLine("\"For you, i'll give you " + value + " for that " + choice + ".\"\n");
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Do you accept? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
                             string input = Console.ReadLine();
 
@@ -927,13 +957,13 @@ namespace loot
                             {
                                 Console.Clear();
                                 Console.WriteLine("\"It's a done deal, then.\"\n");
-                                if(Program.player.Equipped == choice)
+                                if(Program.player.Equipped == itemName)
                                 {
                                     Program.player.Equipped = "fists";
                                 }
-                                Program.playerInventory.Remove(choice);
-                                Program.player.Gold += Program.allItems[choice];
-                                Program.blacksmithInventory.Add(choice);
+                                Program.playerInventory.Remove(itemName);
+                                Program.player.Gold += Program.allItems[itemName];
+                                Program.blacksmithInventory.Add(itemName);
                                 PromptBlacksmith();
                             }
                             else if (input.ToLower() == "n")
@@ -950,7 +980,7 @@ namespace loot
                     }
                     else
                     {
-                        Console.WriteLine("You look for a " + choice + ", but cannot find one.\n");
+                        Console.WriteLine("You look for a " + itemName + ", but cannot find one.\n");
                         PromptBlacksmith();
                     }
                     break;
@@ -980,7 +1010,7 @@ namespace loot
             Console.WriteLine("1) Buy item\n" +
                               "2) Sell item\n" +
                               "3) Leave shop\n");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ResetColor();;
             string choice = Console.ReadLine();
 
             switch (choice.ToLower())
@@ -994,7 +1024,7 @@ namespace loot
                     for (int i = 0; i < Program.alchemistInventory.Count; i++)
                         Console.WriteLine(Program.alchemistInventory[i]);
                     Console.WriteLine("-------------------\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
                     Console.WriteLine("\"What will it be?\"");
                     choice = Console.ReadLine();
@@ -1008,7 +1038,7 @@ namespace loot
 
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("\nIs that okay? (y/n)");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ResetColor();;
 
                         string input = Console.ReadLine();
 
@@ -1059,11 +1089,11 @@ namespace loot
                     for (int i = 0; i < Program.playerInventory.Count; i++)
                         Console.WriteLine(Program.playerInventory[i]);
                     Console.WriteLine("-------------------\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("What do you want to sell? (use item name)\n");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ResetColor();;
 
                     choice = Console.ReadLine();
 
@@ -1083,7 +1113,7 @@ namespace loot
                             Console.WriteLine("\"I can spare " + value + " gold for your " + choice + ".\"\n");
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine("Is that okay? (y/n)");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ResetColor();;
 
                             string input = Console.ReadLine();
 
