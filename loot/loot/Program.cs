@@ -10,13 +10,13 @@ namespace loot
     {
         public static IDictionary<string, int> allItems = new Dictionary<string, int>()
         {
-            {"sword", 5}, {"wakizashi", 15}, {"iron shortsword", 25}, {"iron greatsword", 30},
-            {"potion", 50}, {"health crystal", 200},
+            {"sword", 5}, {"wakizashi", 35}, {"iron shortsword", 35}, {"iron greatsword", 70},
+            {"potion", 30}, {"health crystal", 50},
         };
 
         public static IDictionary<string, int> itemDamage = new Dictionary<string, int>()
         {
-            {"fists", 1}, {"sword", 2}, {"wakizashi", 3}, {"iron shortsword", 4}, {"iron greatsword", 5}
+            {"fists", 0}, {"sword", 1}, {"wakizashi", 2}, {"iron shortsword", 2}, {"iron greatsword", 3}
         };
 
         public static IDictionary<int, int> levels = new Dictionary<int, int>()
@@ -57,8 +57,8 @@ namespace loot
         public static void MainMenu()
         {
             Console.Clear();
-            player.Health = 5;
-            player.MaxHealth = 5;
+            player.Health = 15;
+            player.MaxHealth = 15;
             explorationsLasted = 0;
             enemiesSlain = 0;
             potionsDrank = 0;
@@ -173,7 +173,7 @@ namespace loot
         {
             Random rand = new Random();
             int chance = rand.Next(10);
-            int totalGold = chance + (10 * player.Level);
+            int totalGold = chance + (1 * player.Level);
             player.Gold += totalGold;
             goldObtained += totalGold;
             Console.WriteLine("You've obtained " + totalGold + " gold.\n");
@@ -192,6 +192,13 @@ namespace loot
                 nextMilestone = levels[player.Level + 1];
                 Prompt.PromptUser();
             }
+        }
+
+        public static int RollDice(int sides)
+        {
+            Random rand = new Random();
+            int chance = rand.Next(sides);
+            return chance++;
         }
 
         private static byte[] key = new byte[8] { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -542,8 +549,9 @@ namespace loot
 
                     if (chance > 10)
                     {
-                        Console.WriteLine("You hit your enemy for " + (value + Program.player.Level) + " damage\n");
-                        enemy.Health -= (value + Program.player.Level);
+                        int damage = Program.RollDice(6);
+                        Console.WriteLine("You hit your enemy for " + (damage) + " damage\n");
+                        enemy.Health -= (damage + value);
 
                         chance = rand.Next(100);
 
@@ -552,8 +560,17 @@ namespace loot
 
                         if (chance > 70)
                         {
-                            Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
-                            Program.player.Health -= enemy.Damage;
+                            damage = Program.RollDice(6);
+                            if(damage != 0)
+                            {
+                                Console.WriteLine("The enemy hits you for " + damage + " damage.");
+                                Program.player.Health -= damage;
+                            }
+                            else
+                            {
+                                Console.WriteLine("The enemy rolled a critical fail!");
+                            }
+                            
                             PromptBattle(enemy);
                         }
                         else
@@ -570,8 +587,9 @@ namespace loot
 
                         if (chance > 70)
                         {
-                            Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.");
-                            Program.player.Health -= enemy.Damage;
+                            int damage = Program.RollDice(6);
+                            Console.WriteLine("The enemy hits you for " + damage + " damage.");
+                            Program.player.Health -= damage;
                             PromptBattle(enemy);
                         }
                         else
@@ -594,9 +612,10 @@ namespace loot
                     }
                     else
                     {
+                        int damage = Program.RollDice(6);
                         Console.WriteLine("You failed to escape!");
-                        Console.WriteLine("The enemy hits you for " + enemy.Damage + " damage.\n");
-                        Program.player.Health -= enemy.Damage;
+                        Console.WriteLine("The enemy hits you for " + damage + " damage.\n");
+                        Program.player.Health -= damage;
                         PromptBattle(enemy);
                     }
                 }

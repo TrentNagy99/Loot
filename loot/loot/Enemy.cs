@@ -4,13 +4,11 @@ namespace loot
 {
     class Enemy
     {
-        private int damage;
         private int health;
         private string name;
 
         public Enemy()
         {
-            Damage = 1 + (Program.player.Level + Program.player.Level);
             Health = 2 + (Program.player.Level + Program.player.Level);
             Name = "Skeleton";
         }
@@ -25,7 +23,6 @@ namespace loot
         }
 
         public int Health { get; set; }
-        public int Damage { get; set; }
         public string Name { get; set; }
     }
 }

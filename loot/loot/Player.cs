@@ -10,8 +10,8 @@ namespace loot
     {
         public Player()
         {
-            MaxHealth = 5;
-            Health = 5;
+            MaxHealth = 15;
+            Health = 15;
             Gold = 0;
             Level = 1;
             Experience = 0;
