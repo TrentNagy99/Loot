@@ -43,6 +43,16 @@ namespace loot
             "to get away from family", "due to unforseen consequences", "to explore new places", "to find a job"
         };
 
+        public static IDictionary<int, string> lawfulness = new Dictionary<int, string>
+        {
+            {1, "You are unlawful."}, {2, "You are mostly unlawful."}, {3, "You show average lawfulness."}, {4, "You respect and admire lawfulness."}, {5, "You make sure to uphold the law when necessary."}
+        };
+
+        public static IDictionary<int, string> happiness = new Dictionary<int, string>
+        {
+            {1, "You are depressed."}, {2, "You are mostly unhappy."}, {3, "You are contempt with life"} //Add more
+        };
+
         public static List<string> discover = new List<string>
         {
             //Add Content
