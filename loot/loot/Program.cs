@@ -751,8 +751,6 @@ namespace loot
             Program.player.Hometown = town;
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
 
-            
-
             Console.WriteLine("On a scale of 1-5 how lawful are you?");
             int lawfulness = int.Parse(Console.ReadLine());
 
@@ -762,10 +760,15 @@ namespace loot
             Console.WriteLine("On a scale of 1-5 how productive are you?");
             int productivity = int.Parse(Console.ReadLine());
 
+            Console.Clear();
             Console.WriteLine("You were a " + occupation + " named " + fname + " " + lname + " who hails from " + town + ".");
             Console.WriteLine("You moved to Easthallow " + reason + ".\n");
 
-            Console.WriteLine("Press enter to continue");
+            Console.Write(Generation.lawfulness[lawfulness] + " ");
+            Console.Write(Generation.happiness[happiness] + " ");
+            Console.Write(Generation.productivity[productivity]);
+            
+            Console.WriteLine("\nPress enter to continue");
             Console.Read();
 
             Console.Clear();
