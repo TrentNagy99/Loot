@@ -761,6 +761,7 @@ namespace loot
             PromptTown();
         }
 
+        //Save game
         private static void Save()
         {
             try
