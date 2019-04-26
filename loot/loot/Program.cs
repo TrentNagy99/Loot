@@ -751,12 +751,24 @@ namespace loot
             Program.player.Hometown = town;
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
 
+            
+
+            Console.WriteLine("On a scale of 1-5 how lawful are you?");
+            int lawfulness = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("On a scale of 1-5 how happy are you?");
+            int happiness = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("On a scale of 1-5 how productive are you?");
+            int productivity = int.Parse(Console.ReadLine());
+
             Console.WriteLine("You were a " + occupation + " named " + fname + " " + lname + " who hails from " + town + ".");
             Console.WriteLine("You moved to Easthallow " + reason + ".\n");
 
-            Console.WriteLine("While eavesdropping on a conversation in town, you hear of The Dungeon that contains" +
-            "\ntreasure of immeasurable wealth. With the last few gold you have, you buy a sword and armor." +
-            "\nHaving nothing to lose, you enter The Dungeon whilist clutching your sword close to you.\n");
+            Console.WriteLine("Press enter to continue");
+            Console.Read();
+
+            Console.Clear();
 
             PromptTown();
         }
