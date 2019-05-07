@@ -716,6 +716,9 @@ namespace loot
         //Handles the character generation
         private static void GenerateCharacter()
         {
+            IDictionary<int, int> lawDic = new Dictionary<int, int>{{0,1}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
+            int activeSelection = 1;
+
             string occupation;
             string fname;
             string lname;
@@ -751,23 +754,57 @@ namespace loot
             Program.player.Hometown = town;
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
 
-            Console.WriteLine("On a scale of 1-5 how lawful are you?");
-            int lawfulness = int.Parse(Console.ReadLine());
+            void redraw()
+            {
+                Console.Clear();
+                Console.Write(activeSelection);
 
-            Console.WriteLine("On a scale of 1-5 how happy are you?");
-            int happiness = int.Parse(Console.ReadLine());
+                Console.Write("<");
+                for(int i = 1; i < lawDic.Count; i++)
+                {
+                    int value = 0;
+                    lawDic.TryGetValue(i, out value);
 
-            Console.WriteLine("On a scale of 1-5 how productive are you?");
-            int productivity = int.Parse(Console.ReadLine());
+                    if(value == 1)
+                    {
+                        Console.Write("O");
+                    }
+                    else
+                    {
+                        Console.Write("-");
+                    }
+                }
+                Console.Write(">");
+            }
 
-            Console.Clear();
-            Console.WriteLine("You were a " + occupation + " named " + fname + " " + lname + " who hails from " + town + ".");
-            Console.WriteLine("You moved to Easthallow " + reason + ".\n");
+            redraw();
 
-            Console.Write(Generation.lawfulness[lawfulness] + " ");
-            Console.Write(Generation.happiness[happiness] + " ");
-            Console.Write(Generation.productivity[productivity]);
-            
+            ConsoleKeyInfo control = Console.ReadKey();
+            while(control.KeyChar != 'e')
+            {
+                if (control.KeyChar == 'd')
+                {
+                    lawDic[activeSelection] = 0;
+                    activeSelection++;
+                    if(activeSelection > 5)
+                    {
+                        activeSelection--;
+                    }
+                    lawDic[activeSelection] = 1;
+                    
+                    redraw();
+                }
+                else if(control.KeyChar == 'a')
+                {
+                    lawDic[activeSelection] = 0;
+                    activeSelection--;
+                    lawDic[activeSelection] = 1;
+                    redraw();
+                }
+                
+                control = Console.ReadKey();
+            }
+
             Console.WriteLine("\nPress enter to continue");
             Console.Read();
 
