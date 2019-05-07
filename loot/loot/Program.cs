@@ -346,11 +346,11 @@ namespace loot
                         Random rand = new Random();
                         int chance = rand.Next(100);
 
-                        if (chance >= 0 && chance <= 25)
+                        if (chance >= 0 && chance <= 10)
                             Program.FindChest();
-                        else if (chance >= 26 && chance <= 44)
+                        else if (chance >= 11 && chance <= 30)
                             Program.FindEnemy();
-                        else if (chance >= 45 && chance <= 50)
+                        else if (chance >= 31 && chance <= 41)
                             Program.FindTrap();
                         else
                             Program.FindNothing();
