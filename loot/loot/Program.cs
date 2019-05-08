@@ -760,7 +760,7 @@ namespace loot
                 Console.Write(activeSelection);
 
                 Console.Write("<");
-                for(int i = 1; i < lawDic.Count; i++)
+                for(int i = 0; i < lawDic.Count; i++)
                 {
                     int value = 0;
                     lawDic.TryGetValue(i, out value);
