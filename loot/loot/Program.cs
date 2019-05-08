@@ -717,7 +717,7 @@ namespace loot
         private static void GenerateCharacter()
         {
             IDictionary<int, int> lawDic = new Dictionary<int, int>{{0,1}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
-            int activeSelection = 1;
+            int activeSelection = 0;
 
             string occupation;
             string fname;
@@ -757,10 +757,10 @@ namespace loot
             void redraw()
             {
                 Console.Clear();
-                Console.Write(activeSelection);
+                Console.Write(activeSelection + 1);
 
                 Console.Write("<");
-                for(int i = 0; i < lawDic.Count; i++)
+                for(int i = 0; i <= lawDic.Count; i++)
                 {
                     int value = 0;
                     lawDic.TryGetValue(i, out value);
@@ -769,7 +769,7 @@ namespace loot
                     {
                         Console.Write("O");
                     }
-                    else
+                    else if(i <= 4)
                     {
                         Console.Write("-");
                     }
@@ -786,9 +786,9 @@ namespace loot
                 {
                     lawDic[activeSelection] = 0;
                     activeSelection++;
-                    if(activeSelection > 5)
+                    if(activeSelection > 4)
                     {
-                        activeSelection--;
+                        activeSelection = 4;
                     }
                     lawDic[activeSelection] = 1;
                     
@@ -798,6 +798,10 @@ namespace loot
                 {
                     lawDic[activeSelection] = 0;
                     activeSelection--;
+                    if (activeSelection < 0)
+                    {
+                        activeSelection = 0;
+                    }
                     lawDic[activeSelection] = 1;
                     redraw();
                 }
