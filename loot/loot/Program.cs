@@ -716,30 +716,38 @@ namespace loot
         //Handles the character generation
         private static void GenerateCharacter()
         {
+            //Creating the LawDic lets me assign a binary value to each of the selections. 1 = active 0 = inactive.
             IDictionary<int, int> lawDic = new Dictionary<int, int>{{0,1}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
+            //Active selection just means where the slider pointer is.
             int activeSelection = 0;
 
+            //initialize variables to store character background
             string occupation;
             string fname;
             string lname;
             string town;
             string reason;
-
+            
             Random rand = new Random();
 
+            //Randomly assign male or female
             if (rand.Next(2) == 1)
                 Program.player.Gender = "male";
             else
                 Program.player.Gender = "female";
 
+            //If male, assign male first and last name
             if(Program.player.Gender == "male")
             {
+                //fname is chosen from a list inside Generation.cs.
                 fname = Generation.fNameMale[rand.Next(Generation.fNameMale.Count)];
                 Program.player.FirstName = fname;
 
+                //lname is the same as fname.
                 lname = Generation.lNameMale[rand.Next(Generation.lNameMale.Count)];
                 Program.player.LastName = lname;
             }
+            //If female, assign female first and last name.
             else
             {
                 fname = Generation.fNameFemale[rand.Next(Generation.fNameFemale.Count)];
@@ -748,50 +756,72 @@ namespace loot
                 lname = Generation.lNameFemale[rand.Next(Generation.lNameFemale.Count)];
                 Program.player.LastName = lname;
             }
-
+            
+            //Assign the other backstory stuff with the lists inside Generation.cs.
             occupation = Generation.occupation[rand.Next(Generation.occupation.Count)];
             town = Generation.town[rand.Next(Generation.town.Count)];
             Program.player.Hometown = town;
             reason = Generation.reason[rand.Next(Generation.reason.Count)];
 
+            /**
+             * Redraw the screen so that the cursor is updated every time the player slides any slider.
+             */
             void redraw()
             {
+                //Clear the screen.
                 Console.Clear();
-                Console.Write(activeSelection + 1);
 
+                Console.WriteLine("Lawfulness");
+
+                //Begin the slider.
                 Console.Write("<");
+
+                //For every point on the slider.
                 for(int i = 0; i <= lawDic.Count; i++)
                 {
+                    //Make a temp value variable and get the value for every point in lawDic.
                     int value = 0;
                     lawDic.TryGetValue(i, out value);
 
+                    //If the value is 1, replace with the cursor, otherwise, just display a '-'.
                     if(value == 1)
                     {
-                        Console.Write("O");
+                        Console.Write("■");
                     }
                     else if(i <= 4)
                     {
                         Console.Write("-");
                     }
                 }
+                //Close the slider.
                 Console.Write(">");
             }
 
+            //First redraw
             redraw();
 
+            //Get the player's input
             ConsoleKeyInfo control = Console.ReadKey();
+            //While the player hasn't pressed 'e'...
             while(control.KeyChar != 'e')
             {
+                //If the player hit 'd'
                 if (control.KeyChar == 'd')
                 {
+                    //Make the current selection revert to 0, which removes the cursor on that point
                     lawDic[activeSelection] = 0;
+                    //Move the selection to the right
                     activeSelection++;
+                    //Check to see if the cursor is trying to go above 4 (5).
                     if(activeSelection > 4)
                     {
+                        //stop the cursor from going above 4.
                         activeSelection = 4;
                     }
+                    //Assign the lawDic's point correlated to the activeSelection to a 1, making it active.
                     lawDic[activeSelection] = 1;
                     
+                    //Lastly, redraw the screen.
                     redraw();
                 }
                 else if(control.KeyChar == 'a')
@@ -808,6 +838,11 @@ namespace loot
                 
                 control = Console.ReadKey();
             }
+
+            int lawfulness = activeSelection + 1;
+
+            Console.Clear();
+            Console.WriteLine("You have a lawfulness of " + lawfulness);
 
             Console.WriteLine("\nPress enter to continue");
             Console.Read();
