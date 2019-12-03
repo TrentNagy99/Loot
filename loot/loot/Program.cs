@@ -238,14 +238,13 @@ namespace loot
                                   "s: Save\n" + 
                                   "e: Exit\n");
                 Console.ResetColor();;
-                ConsoleKeyInfo input = Console.ReadKey();
+                string input = Console.ReadLine();
 
                 //Show the inventory, and ask player  if they want to use an item.
-                switch (input.KeyChar.ToString().ToLower())
+                switch (input.ToString().ToLower())
                 {
                     //Show the player's inventory, ask if they want to use an item
                     case "1":
-                    case "i":
                         // Catch an exception if there's a problem with printing out the inventory list.
                         try
                         {
@@ -339,7 +338,6 @@ namespace loot
                         break;
                     //Explore the dungeon
                     case "2":
-                    case "p":
                         Console.WriteLine("\nYou explore the dungeon further.\n");
                         Program.explorationsLasted++;
                         Program.currentDepth++;
@@ -359,7 +357,6 @@ namespace loot
                         break;
                     //Show player stats
                     case "3":
-                    case "a":
                         Console.Clear();
                         Console.WriteLine("You are " + Program.player.FirstName + " " + Program.player.LastName);
                         Console.WriteLine("Your hometown is " + Program.player.Hometown + "\n");
@@ -372,7 +369,6 @@ namespace loot
                         PromptUser();
                         break;
                     case "4":
-                    case "l":
                         double calculateHealth(double health, double maxHealth)
                         {
                             double calculated = (health / maxHealth) * 100;
@@ -485,12 +481,10 @@ namespace loot
                         break;
                     //Save the game
                     case "5":
-                    case "s":
                         Save();
                         break;
                     //Return to menu
                     case "6":
-                    case "e":
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("Do you wish to save first before exiting? (y/n)");
                         Console.ResetColor();;
@@ -633,24 +627,24 @@ namespace loot
         //Handles menu selection
         public static void PromptMenu()
         {
-            Console.WriteLine("n: New Game");
-            Console.WriteLine("c: Continue");
-            Console.WriteLine("e: Exit\n");
+            Console.WriteLine("1: New Game");
+            Console.WriteLine("2: Continue");
+            Console.WriteLine("3: Exit\n");
 
-            ConsoleKeyInfo menuChoice = Console.ReadKey();
+            string menuChoice = Console.ReadLine();
 
-            switch (menuChoice.KeyChar.ToString().ToLower())
+            switch (menuChoice.ToString())
             {
                 //New Game
-                case "n":
+                case "1":
                     Console.Clear();
                     GenerateCharacter();
                     break;
                 //Exit game
-                case "e":
+                case "3":
                     Environment.Exit(0);
                     break;
-                case "c":
+                case "2":
                     try
                     {
                         //Create a new BinaryReader
@@ -718,6 +712,7 @@ namespace loot
         {
             //Creating the LawDic lets me assign a binary value to each of the selections. 1 = active 0 = inactive.
             IDictionary<int, int> lawDic = new Dictionary<int, int>{{0,1}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
+
             //Active selection just means where the slider pointer is.
             int activeSelection = 0;
 
@@ -794,7 +789,8 @@ namespace loot
                     }
                 }
                 //Close the slider.
-                Console.Write(">");
+                Console.Write(">\n");
+                Console.Write("press \'e\' to continue");
             }
 
             //First redraw
@@ -842,7 +838,10 @@ namespace loot
             int lawfulness = activeSelection + 1;
 
             Console.Clear();
-            Console.WriteLine("You have a lawfulness of " + lawfulness);
+
+            Console.WriteLine("You are " + Program.player.FirstName + " " + Program.player.LastName + ". You were a " + occupation + " who hails from " + Program.player.Hometown + ".");
+            Console.WriteLine("You moved to Easthallow " + reason);
+            Console.WriteLine(Generation.lawfulness[lawfulness]);
 
             Console.WriteLine("\nPress enter to continue");
             Console.Read();
@@ -913,24 +912,24 @@ namespace loot
         {
             Console.WriteLine("The town is full of people going in and out of shops.\n");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("b: Blacksmith\n" +
-                              "a: Alchemist Shop\n" +
-                              "e: Enter The Dungeon");
+            Console.WriteLine("1: Blacksmith\n" +
+                              "2: Alchemist Shop\n" +
+                              "3: Enter The Dungeon");
             Console.ResetColor();;
 
-            ConsoleKeyInfo choice = Console.ReadKey();
+            string choice = Console.ReadLine();
 
-            switch (choice.KeyChar.ToString().ToLower())
+            switch (choice.ToString())
             {
-                case "b":
+                case "1":
                     Console.Clear();
                     PromptBlacksmith();
                     break;
-                case "a":
+                case "2":
                     Console.Clear();
                     PromptAlchemist();
                     break;
-                case "e":
+                case "3":
                     Console.Clear();
                     Console.WriteLine("You arrive back at The Dungeon.\n");
                     PromptUser();
@@ -953,9 +952,9 @@ namespace loot
                               "3) Leave shop\n");
             Console.ResetColor();;
 
-            ConsoleKeyInfo choice = Console.ReadKey();
+            string choice = Console.ReadLine();
 
-            switch (choice.KeyChar.ToString().ToLower())
+            switch (choice.ToString())
             {
                 case "1":
                     Console.Clear();

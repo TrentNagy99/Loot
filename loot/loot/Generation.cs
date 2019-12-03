@@ -45,17 +45,17 @@ namespace loot
 
         public static IDictionary<int, string> lawfulness = new Dictionary<int, string>
         {
-            {1, "You are unlawful."}, {2, "You are mostly unlawful."}, {3, "You show average lawfulness."}, {4, "You respect and admire lawfulness."}, {5, "You make sure to uphold the law when necessary."}
+            {1, "You tend to turn your back to the law, mostly for your own gain."}, {2, "You dabble in your unlawfulness, either careful not to get caught or to try and maintian some order."}, {3, "You are constantly on the edge of lawfulness and unlawfulness."}, {4, "You respect and admire lawfulness."}, {5, "You make sure to uphold the law when necessary."}
         };
 
         public static IDictionary<int, string> happiness = new Dictionary<int, string>
         {
-            {1, "You are depressed."}, {2, "You are mostly unhappy."}, {3, "You are contempt with life."}, {4, "You are mostly happy."}, {5, "You are always happy."}
+            {1, "You spend your days in a constant depression."}, {2, "You tend to sulk more than others."}, {3, "You are neither sad or happy with how your life worked out."}, {4, "You are quite contempt with most things in your life."}, {5, "You have a greater happiness with your life than all others, and wouldn't trade it for anything.."}
         };
 
         public static IDictionary<int, string> productivity = new Dictionary<int, string>
         {
-            {1, "You are not productive at all."}, {2, "You are mostly unproductive."}, {3, "You are productive at times, and others, you aren't."}, {4, "You are mostly productive."}, {5, "You are always productive."}
+            {1, "You find work and effort to be insulting."}, {2, "You tend to avoid work when there's a better solution."}, {3, "You neither like or dislike work, you just do what you must.."}, {4, "You find productivity to be more beneficial in the long run."}, {5, "You think that productivity and hard work are desireable in every person."}
         };
 
         public static List<string> discover = new List<string>
