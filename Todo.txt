@@ -1,0 +1,13 @@
+﻿==========================
+Grand list of things to do
+==========================
+
+-Figure out the "Invisible potion" bug
+
+-Interactable list for NPCs
+
+-General HUD implementations
+
+-Inventory screen can select hidden item at end of list 
+(related to invis potion bug)
+
